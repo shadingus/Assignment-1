@@ -1,0 +1,27 @@
+<main class="main">
+    <div class="login-box">
+        <div class="login-contents">
+            <div class="title">
+                <h1>Yappers</h1>
+            </div>
+            <div class="login-form">
+                <h3 for="basic-url" class="form-label" style="padding-bottom: 10px;">Login</h3>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Username</span>
+                    <input type="text" class="form-control" [(ngModel)]="username" placeholder="Username" aria-label="Username"
+                        aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Password</span>
+                    <input type="text" class="form-control" [(ngModel)]="password" placeholder="Password" aria-label="Password"
+                        aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="login-button">
+                <div>
+                    <button type="button" class="btn btn-success" id="login" (click)="onLogin()">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
