@@ -2,8 +2,8 @@
     border: 2px solid black;
     background: blanchedalmond; 
     border-radius: 30px;
-    width: 500px;
-    height: 500px;
+    width: 400px;
+    height: 400px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -36,6 +36,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.input-group-text {
+    width: 80px;
+    display: inline-block;
+    text-align: center;
 }
 
 h1 {
