@@ -21,7 +21,6 @@ export class LoginComponent {
       this.router.navigate(['/dashboard'], { queryParams: {username: this.username } });
     } else {
       alert('Please enter a username.');
-    }
-  }
-
-}
+    };
+  };
+};
