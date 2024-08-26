@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { query } from '@angular/animations';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -14,13 +14,29 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private http: HttpClient) {}
 
   onLogin() {
-    if (this.username) {
-      this.router.navigate(['/dashboard'], { queryParams: {username: this.username } });
+    if (this.username && this.password) {
+
+      this.http.post('http://localhost:3000/login', {
+        username: this.username,
+        password: this.password
+      }).subscribe({
+        next: response => {
+          console.log('Login response:', response);
+          this.router.navigate(['/dashboard'], { queryParams: { username: this.username } });
+        },
+        error: error => {
+          console.error('Login error:', error);
+          alert('Login failed.');
+        },
+        complete: () => {
+          console.log('Login request completed.');
+        }
+      });
     } else {
-      alert('Please enter a username.');
+      alert('Please enter both a username and a password.');
     };
   };
 };
