@@ -25,8 +25,7 @@ app.post('/login', (req, res) => {
     res.json({ message: 'Login successful.', username });
 })
 
-var http = require('http').Server(app);
 const port = 3000;
-http.listen(port, function() {
+app.listen(port, () => {
     console.log(`Server is running on port http://localhost:${port}`);
 })
