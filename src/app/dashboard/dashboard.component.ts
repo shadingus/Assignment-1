@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,11 +10,16 @@ import { ActivatedRoute } from '@angular/router';
 export class DashboardComponent implements OnInit {
   username: string | null = '';
 
-  constructor(private route: ActivatedRoute) {}
+  constructor() {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.username = params['username'];
-    })
-  }
-}
+    const storedUser = sessionStorage.getItem('user');
+
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      this.username = user.username;
+    } else {
+      console.log('No user is logged in!');
+    };
+  };
+};

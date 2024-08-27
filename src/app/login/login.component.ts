@@ -23,8 +23,12 @@ export class LoginComponent {
         username: this.username,
         password: this.password
       }).subscribe({
-        next: response => {
+        next: (response: any) => {
           console.log('Login response:', response);
+          sessionStorage.setItem('user', JSON.stringify({
+            username: this.username,
+            password: this.password
+          }))
           this.router.navigate(['/dashboard'], { queryParams: { username: this.username } });
         },
         error: error => {
