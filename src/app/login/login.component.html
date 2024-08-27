@@ -1,25 +1,35 @@
 <main class="main">
-    <div class="login-box">
-        <div class="login-contents">
+    <div class="login-page">
+        <div class="title-card">
             <div class="title">
                 <h1>Yappers</h1>
             </div>
-            <div class="login-form">
-                <h3 for="basic-url" class="form-label" style="padding-bottom: 10px;">Welcome</h3>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">Username</span>
-                    <input type="username" class="form-control" [(ngModel)]="username" placeholder="Username" aria-label="Username"
-                        aria-describedby="basic-addon1">
-                </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">Password</span>
-                    <input type="password" class="form-control" [(ngModel)]="password" placeholder="Password" aria-label="Password"
-                        aria-describedby="basic-addon1">
-                </div>
+            <div>
+                <h4 style="padding-top: 50px; padding-left: 20px; padding-right: 20px; text-align: center;">Welcome to Yappers!<br>Yappers is a social application you
+                    can use to yap with your friends!</h4>
             </div>
-            <div class="login-button">
-                <div>
-                    <button type="button" class="btn btn-success" id="login" (click)="onLogin()">Login</button>
+        </div>
+        <div class="login-box">
+            <div class="login-contents">
+                <div class="login-form">
+                    <h3 for="basic-url" class="form-label" style="padding-bottom: 10px;">Login</h3>
+                    <div class="user-input">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Username</span>
+                            <input type="username" class="form-control" [(ngModel)]="username" placeholder="Username"
+                                aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Password</span>
+                            <input type="password" class="form-control" [(ngModel)]="password" placeholder="Password"
+                                aria-label="Password" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                </div>
+                <div class="login-button">
+                    <div>
+                        <button type="button" class="btn" id="login" (click)="onLogin()">Login</button>
+                    </div>
                 </div>
             </div>
         </div>
