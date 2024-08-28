@@ -1,9 +1,9 @@
 .chat-container {
     padding: 30px;
     background: #352d44;
-    width: 97vw;
-    height: 90vh;
-    margin: 20px auto 0 auto;
+    width: 90vw;
+    height: 88vh;
+    margin: 20px 20px 20px 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     border-radius: 30px;
     overflow: auto;
@@ -11,30 +11,66 @@
 }
 
 .group-container {
-    width: 98vw;
+    width: 90vw;
     margin: 10px auto 0 auto;
+    overflow-x: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 30px;
 }
 
 .group-list {
     display: flex;
-    justify-content: space-around;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
     padding: 10px;
     background: #2b2433;
     border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
 }
 
-.group-button {
-    padding: 10px 20px;
+.dashboard-button {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
     background-color: #4c3a5c;
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 50%;
     cursor: pointer;
     font-size: 1.2em;
+    text-align: center;
+    line-height: 50px;
     transition: background-color 0.3s;
-    flex: 1;
-    margin: 0 5px;
+    flex-shrink: 0;
+}
+
+.dashboard-button:hover {
+    background-color: #6b5179;
+}
+
+.divider {
+    width: 2px;
+    height: 50px;
+    background-color: white;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.group-button {
+    width: 50px;
+    height: 50px;
+    margin: 0 10px;
+    background-color: #4c3a5c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2em;
+    text-align: center;
+    line-height: 50px;
+    transition: background-color 0.3s;
+    flex-shrink: 0;
 }
 
 .group-button:hover {
@@ -44,9 +80,9 @@
 .dashboard-container {
     background: linear-gradient(45deg, #909cff, #8200ff, #bf00ff);
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Stack chat-container and group-container vertically */
     align-items: center;
     justify-content: flex-start;
     min-height: 100vh;
-    padding-top: 5px;
+    padding-top: 30px;
 }

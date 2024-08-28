@@ -1,15 +1,22 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
   username: string | null = '';
   selectedGroup: string | null = null;
+
+  groups = [
+    {id: 1, name: 'Apple'},
+    {id: 2, name: 'Banana'},
+    {id: 3, name: 'Cucumber'},
+  ];
 
   constructor() {}
 
@@ -24,7 +31,7 @@ export class DashboardComponent implements OnInit {
     };
   };
 
-  selectGroup(group: string) {
+  selectGroup(group: string | null) {
     this.selectedGroup = group;
     console.log(`Group selected: ${group}.`);
   };
