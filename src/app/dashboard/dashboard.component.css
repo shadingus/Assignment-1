@@ -1,7 +1,7 @@
 .chat-container {
     padding: 30px;
     background: #352d44;
-    width: 90vw;
+    width: 97vw;
     height: 90vh;
     margin: 20px auto 0 auto;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -11,7 +11,7 @@
 }
 
 .group-container {
-    width: 90vw;
+    width: 98vw;
     margin: 10px auto 0 auto;
 }
 
@@ -48,5 +48,5 @@
     align-items: center;
     justify-content: flex-start;
     min-height: 100vh;
-    padding-top: 30px;
+    padding-top: 5px;
 }

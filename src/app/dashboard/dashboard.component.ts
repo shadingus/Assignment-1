@@ -9,6 +9,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashboardComponent implements OnInit {
   username: string | null = '';
+  selectedGroup: string | null = null;
 
   constructor() {}
 
@@ -21,5 +22,10 @@ export class DashboardComponent implements OnInit {
     } else {
       console.log('No user is logged in!');
     };
+  };
+
+  selectGroup(group: string) {
+    this.selectedGroup = group;
+    console.log(`Group selected: ${group}.`);
   };
 };
