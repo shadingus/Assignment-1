@@ -1,9 +1,9 @@
 .chat-container {
     padding: 20px;
     background: #352d44;
-    width: 90vw;
+    width: 97vw;
     height: 88vh;
-    margin: 20px 20px 20px 20px;
+    margin: 0px 20px 20px 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     border-radius: 30px;
     overflow: auto;
@@ -29,7 +29,7 @@
 }
 
 .group-container {
-    width: 90vw;
+    width: 97vw;
     margin: 10px auto 0 auto;
     overflow-x: auto;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
