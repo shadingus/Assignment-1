@@ -93,9 +93,6 @@ main {
 }
 
 .title-card {
-    border-left: 4px solid #352d44;
-    border-top: 4px solid #352d44;
-    border-bottom: 4px solid #352d44;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
     background: linear-gradient(45deg, #909cff, #8200ff, #bf00ff);
@@ -109,7 +106,7 @@ main {
 
 .login-box {
     background: white;
-    border: 4px solid #352d44;
+    border-left: 3px solid #352d44;
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
     padding-left: 30px;
