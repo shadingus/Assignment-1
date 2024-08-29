@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
 const path = require('path');
+require('dotenv').config();
 
 // Middleware
 app.use(cors());
@@ -20,12 +21,13 @@ app.get('/', (req, res) => {
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
-    console.log(`User logged in as: ${username} (Password: ${password}).`);
+    console.log(`User logged in as: ${username}`);
 
     res.json({ message: 'Login successful.', username });
 })
 
-const port = 3000;
+port = process.env.PORT
+
 app.listen(port, () => {
     console.log(`Server is running on port http://localhost:${port}`);
 })

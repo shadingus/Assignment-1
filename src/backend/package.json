@@ -8,5 +8,9 @@
   "keywords": [],
   "author": "Flynn McCooke",
   "license": "ISC",
-  "description": "Back-end server for Software Frameworks video and chat application."
+  "description": "Back-end server for Software Frameworks video and chat application.",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
 }
