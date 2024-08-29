@@ -1,7 +1,6 @@
 <main class="main">
   <div class="dashboard-container">
     <div class="dashbox">
-      <!-- Single chat-container to hold dynamic content -->
       <div class="chat-container">
         <h1 *ngIf="!selectedGroup">Welcome to the Dashboard, {{ username }}!</h1>
         <p *ngIf="!selectedGroup">Select a group to view the chat.</p>
@@ -9,17 +8,20 @@
         <div *ngIf="selectedGroup">
           <h1>Chatroom for {{ selectedGroup }}</h1>
           <p>{{ selectedGroup }} chat content goes here...</p>
+          <div class="chat-messages">
+            <p *ngFor="let message of messages">{{ message }}</p>
+          </div>
         </div>
         <div class="text-box">
-          <input type="text" class="chat-input" placeholder="Enter message here..."/>
+          <input type="text" class="chat-input" placeholder="Message ${group.name}" [(ngModel)]="newMessage"/>
+          <button class="send-button" (click)="sendMessage()">Send</button>
         </div>
       </div>
 
-      <!-- Scrollable group toolbar with Dashboard button -->
       <div class="group-container">
         <div class="group-list">
           <button class="dashboard-button" (click)="selectGroup(null)">D</button>
-          <div class="divider"></div> <!-- Divider between Dashboard and Groups -->
+          <div class="divider"></div>
           <button *ngFor="let group of groups" class="group-button" (click)="selectGroup(group.name)">
             {{ group.name.charAt(0) }}
           </button>

@@ -15,17 +15,33 @@
 }
 
 .text-box {
+    display: flex;
     width: 100%;
     margin-top: auto;
 }
 
 .chat-input {
+    flex-grow: 1;
     width: 100%;
     padding: 10px;
-    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    margin-right: 10px;
+}
+
+.send-button {
+    padding: 10px 20px;
     border: none;
-    border-radius: 10px;
-    box-sizing: border-box;
+    background-color: #007bff;
+    color: white;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0;
+}
+
+.send-button:hover {
+    background-color: #0056b3;
 }
 
 .group-container {
