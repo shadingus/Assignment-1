@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/login', (req, res) => {
-    const { username, password } = req.body;
+    const { username } = req.body;
 
     console.log(`User logged in as: ${username}`);
 
