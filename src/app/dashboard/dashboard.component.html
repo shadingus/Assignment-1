@@ -4,7 +4,7 @@
       <div class="chat-container">
         <h1 *ngIf="!selectedGroup">Welcome to the Dashboard, {{ username }}!</h1>
         <p *ngIf="!selectedGroup">Select a group to view the chat.</p>
-        
+
         <div *ngIf="selectedGroup">
           <h1>Chatroom for {{ selectedGroup }}</h1>
           <p>{{ selectedGroup }} chat content goes here...</p>
@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="text-box">
-          <input type="text" class="chat-input" placeholder="Message ${group.name}" [(ngModel)]="newMessage"/>
+          <input type="text" class="chat-input" placeholder="Message ${group.name}" [(ngModel)]="newMessage" />
           <button class="send-button" (click)="sendMessage()">Send</button>
         </div>
       </div>
@@ -25,6 +25,31 @@
           <button *ngFor="let group of groups" class="group-button" (click)="selectGroup(group.name)">
             {{ group.name.charAt(0) }}
           </button>
+          <div class="spacer"></div>
+          <button type="button" class="new-group-button" (click)="showModal()">+</button>
+        </div>
+      </div>
+
+      <div class="modal fade" id="newGroupModal" tabindex="-1" aria-labelledby="newGroupModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="newGroupModalLabel">Create New Group</h5>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="mb-3">
+                  <label for="groupName" class="form-label">Group Name</label>
+                  <input type="text" class="form-control" id="groupName" [(ngModel)]="newGroupName" name="groupName"
+                    required>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="cancel()">Close</button>
+              <button type="button" class="btn btn-primary" (click)="createGroup()">Create Group</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

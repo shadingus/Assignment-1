@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,14 +15,13 @@ export class DashboardComponent implements OnInit {
   selectedGroup: string | null = null;
   newMessage: string = '';
   messages: string[] = [];
+  newGroupName: string = '';
 
-  groups = [
-    {id: 1, name: 'Apple'},
-    {id: 2, name: 'Banana'},
-    {id: 3, name: 'Cucumber'},
-  ];
+  groups: { id: number; name: string }[] = [];
 
-  constructor() {}
+  private modalInstance: any;
+
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
     const storedUser = sessionStorage.getItem('user');
@@ -32,12 +32,49 @@ export class DashboardComponent implements OnInit {
     } else {
       console.log('No user is logged in!');
     };
+
+    this.http.get<{ id: number; name: string }[]>('/groups').subscribe((groups) => {
+      this.groups = groups;
+      sessionStorage.setItem('groups', JSON.stringify(groups));
+    })
   };
 
   selectGroup(group: string | null) {
     this.selectedGroup = group;
     console.log(`Group selected: ${group}.`);
     this.messages = [];
+  };
+
+  showModal() {
+    const modalElement = document.getElementById('newGroupModal');
+    if (modalElement) {
+      this.modalInstance = new bootstrap.Modal(modalElement);
+      this.modalInstance.show();
+    }
+  }
+
+  createGroup() {
+    const trimmedGroupName = this.newGroupName.trim();
+
+    if (trimmedGroupName) {
+      this.http.post<{ id: number, name: string }>('/groups', { name: trimmedGroupName }).subscribe(newGroup => {
+        this.groups.push(newGroup);
+        sessionStorage.setItem('groups', JSON.stringify(this.groups));
+        this.newGroupName = '';
+      });
+
+      if (this.modalInstance) {
+        this.modalInstance.hide();
+      };
+    } else {
+      alert('Please enter a group name.');
+    };
+  };
+
+  cancel() {
+    if (this.modalInstance) {
+      this.modalInstance.hide();
+    };
   };
 
   sendMessage() {

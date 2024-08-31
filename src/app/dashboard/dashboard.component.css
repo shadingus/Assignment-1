@@ -63,6 +63,26 @@
     white-space: nowrap;
 }
 
+.spacer {
+    flex-grow: 1;
+}
+
+.new-group-button {
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
+    background-color: #4c3a5c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2em;
+    text-align: center;
+    line-height: 50px;
+    transition: background-color 0.3s;
+    flex-shrink: 0;
+}
+
 .dashboard-button {
     width: 50px;
     height: 50px;
@@ -77,6 +97,10 @@
     line-height: 50px;
     transition: background-color 0.3s;
     flex-shrink: 0;
+}
+
+.new-group-button:hover {
+    background-color: #6b5179;
 }
 
 .dashboard-button:hover {

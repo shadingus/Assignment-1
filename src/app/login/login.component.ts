@@ -27,13 +27,17 @@ export class LoginComponent {
           console.log('Login response:', response);
           sessionStorage.setItem('user', JSON.stringify({
             username: this.username,
-            password: this.password
           }))
           this.router.navigate(['/dashboard'], { queryParams: { username: this.username } });
         },
         error: error => {
-          console.error('Login error:', error);
-          alert('Login failed.');
+          if (error.status === 404) {
+            alert('User does not exist. Please contact the super admin to create your login credentials.');
+          } else if (error.status === 401) {
+            alert('Incorrect password. Please try again.');
+          } else {
+            alert('Login failed. Please try again later.');
+          };
         },
         complete: () => {
           console.log('Login request completed.');
