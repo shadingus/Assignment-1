@@ -2,8 +2,15 @@
   <div class="dashboard-container">
     <div class="dashbox">
       <div class="chat-container">
-        <h1 *ngIf="!selectedGroup">Welcome to the Dashboard, {{ username }}!</h1>
-        <p *ngIf="!selectedGroup">Select a group to view the chat.</p>
+        <div *ngIf="!selectedGroup">
+          <h1>Welcome to the Dashboard, {{ user.username }}!</h1>
+          <p>Email: {{ user.email }}</p>
+          <p>ID: {{ user.id }}</p>
+          <p>Role: {{ user.role }}</p>
+          <p>Groups: {{ user.groups.join(', ') }}</p>
+          <p>Select a group to view the chat.</p>
+        </div>
+
 
         <div *ngIf="selectedGroup">
           <h1>Chatroom for {{ selectedGroup }}</h1>

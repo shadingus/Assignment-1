@@ -1,14 +1,45 @@
 {
+  "roles": [
+    {
+      "role-type": "Super Admin"
+    },
+    {
+      "role-type": "Group Admin"
+    },
+    {
+      "role-type": "User"
+    }
+  ],
   "groups": [
     {
       "id": 1,
+      "name": "Admin Chat"
+    },
+    {
+      "id": 2,
       "name": "Test"
+    },
+    {
+      "id": 3,
+      "name": "Banana"
     }
   ],
   "users": [
     {
+      "id": 1,
+      "email": "super@admin.com",
+      "username": "super",
+      "password": "123",
+      "role": "Super Admin",
+      "groups": ["Test", "Admin Chat"]
+    },
+    {
+      "id": 2,
+      "email": "shadingus@user.com",
       "username": "shadingus",
-      "password": "password1"
+      "password": "password1",
+      "role": "User",
+      "groups": ["Test", "Banana"]
     }
   ]
 }

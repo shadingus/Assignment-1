@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
-  username: string | null = '';
+  user: any = {};
   selectedGroup: string | null = null;
   newMessage: string = '';
   messages: string[] = [];
@@ -27,8 +27,7 @@ export class DashboardComponent implements OnInit {
     const storedUser = sessionStorage.getItem('user');
 
     if (storedUser) {
-      const user = JSON.parse(storedUser);
-      this.username = user.username;
+      this.user = JSON.parse(storedUser);
     } else {
       console.log('No user is logged in!');
     };
@@ -79,7 +78,7 @@ export class DashboardComponent implements OnInit {
 
   sendMessage() {
     if (this.newMessage.trim()) {
-      this.messages.push(`${this.username}: ${this.newMessage}`);
+      this.messages.push(`${this.user.username}: ${this.newMessage}`);
       this.newMessage = '';
     };
   };

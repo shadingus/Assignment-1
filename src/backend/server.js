@@ -48,7 +48,16 @@ app.post('/login', (req, res) => {
         return res.status(401).json({ error: 'Incorrect password. Please try again.' });
     }
 
-    res.json({ message: 'Login successful.', username });
+    res.json({
+        message: 'Login successful.',
+        user: {
+            id: user.id,
+            email: user.email,
+            username: user.username,
+            role: user.role,
+            groups: user.groups
+        },
+     });
 });
 
 

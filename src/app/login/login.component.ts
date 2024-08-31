@@ -26,8 +26,12 @@ export class LoginComponent {
         next: (response: any) => {
           console.log('Login response:', response);
           sessionStorage.setItem('user', JSON.stringify({
-            username: this.username,
-          }))
+            id: response.user.id,
+            email: response.user.email,
+            username: response.user.username,
+            role: response.user.role,
+            groups: response.user.groups,
+          }));
           this.router.navigate(['/dashboard'], { queryParams: { username: this.username } });
         },
         error: error => {
