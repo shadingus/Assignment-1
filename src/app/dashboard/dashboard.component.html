@@ -9,6 +9,7 @@
           <p>Role: {{ user.role }}</p>
           <p>Groups: {{ user.groups.join(', ') }}</p>
           <p>Select a group to view the chat.</p>
+          <button class="btn btn-danger" (click)="logout()">Logout</button>
         </div>
 
 

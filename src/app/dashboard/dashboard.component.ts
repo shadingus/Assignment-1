@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,7 +22,7 @@ export class DashboardComponent implements OnInit {
 
   private modalInstance: any;
 
-  constructor(private http: HttpClient) { }
+  constructor(private router: Router, private http: HttpClient) { }
 
   ngOnInit() {
     const storedUser = sessionStorage.getItem('user');
@@ -74,6 +75,11 @@ export class DashboardComponent implements OnInit {
     if (this.modalInstance) {
       this.modalInstance.hide();
     };
+  };
+
+  logout() {
+    sessionStorage.removeItem('user');
+    this.router.navigate(['/login'])
   };
 
   sendMessage() {
