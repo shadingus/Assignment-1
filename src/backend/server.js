@@ -32,8 +32,14 @@ if (fs.existsSync(DATA_FILE)) {
 
 function saveData() {
     const data = { groups, users };
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+    try {
+        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+        console.log('Data successfully written to file.');
+    } catch (error) {
+        console.error('Error writing data to file:', error);
+    }
 };
+
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(staticPath, 'index.html'));
@@ -109,7 +115,11 @@ app.get('/groups', (req, res) => {
 
 app.post('/groups', (req, res) => {
     const { name } = req.body;
-    const newGroup = { id: groups.length + 1, name };
+    const newGroup = {
+        id: groups.length + 1,
+        name,
+        channels: [],
+    };
     groups.push(newGroup);
     saveData();
     res.json(newGroup);
@@ -149,6 +159,60 @@ app.get('/groups/:groupId/messages', (req, res) => {
     }
 
     return res.json(group.messages);
+});
+
+app.post('/groups/:groupId/channels', (req, res) => {
+    const { groupId } = req.params;
+    const { name } = req.body;
+
+    const group = groups.find(group => group.id === parseInt(groupId, 10));
+
+    if (!group) {
+        console.error(`Group with ID ${groupId} not found.`);
+        return res.status(404).json({ error: 'Group not found.' });
+    }
+
+    const newChannel = {
+        id: group.channels.length + 1,
+        name,
+        messages: []
+    };
+
+    group.channels.push(newChannel);
+    console.log(`Channel created: ${JSON.stringify(newChannel)}`); // Log the new channel
+    saveData();
+    console.log('Data saved to file.'); // Log that the data is saved
+
+    return res.json({ message: 'Channel created successfully.', newChannel });
+});
+
+
+app.get('/groups/:groupId/channels', (req, res) => {
+    const { groupId } = req.params;
+
+    const group = groups.find(group => group.id === parseInt(groupId, 10));
+
+    if (!group) {
+        return res.status(404).json({ error: 'Group not found.' });
+    }
+
+    return res.json(group.channels);
+});
+
+app.get('/groups/:groupId/channels/:channelId/messages', (req, res) => {
+    const { groupId, channelId } = req.params;
+
+    const group = groups.find(group => group.id === parseInt(groupId, 10));
+    if (!group) {
+        return res.status(404).json({ error: 'Group not found.' });
+    }
+
+    const channel = group.channels.find(channel => channel.id === parseInt(channelId, 10));
+    if (!channel) {
+        return res.status(404).json({ error: 'Channel not found.' });
+    }
+
+    return res.json(channel.messages);
 });
 
 const port = process.env.PORT || 3000;

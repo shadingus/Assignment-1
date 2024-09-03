@@ -3,36 +3,64 @@
     {
       "id": 1,
       "name": "Admin Chat",
-      "messages": []
+      "channels": [
+        {
+          "id": 1,
+          "name": "General",
+          "messages": []
+        }
+      ]
     },
     {
       "id": 2,
       "name": "Test",
-      "messages": []
+      "channels": [
+        {
+          "id": 1,
+          "name": "General",
+          "messages": []
+        },
+        {
+          "id": 2,
+          "name": "testAdmin",
+          "messages": []
+        }
+      ]
     },
     {
       "id": 3,
       "name": "Banana",
-      "messages": [
+      "channels": [
         {
-          "username": "super",
-          "message": "Shadingus, you're in trouble."
+          "id": 1,
+          "name": "General",
+          "messages": [
+            {
+              "username": "super",
+              "message": "Shadingus, you're in trouble."
+            },
+            {
+              "username": "super",
+              "message": "test"
+            },
+            {
+              "username": "super",
+              "message": "hehehe"
+            },
+            {
+              "username": "shadingus",
+              "message": "what have i done?!"
+            },
+            {
+              "username": "super",
+              "message": "wow"
+            }
+          ]
         },
         {
-          "username": "super",
-          "message": "test"
-        },
-        {
-          "username": "super",
-          "message": "hehehe"
-        },
-        {
-          "username": "shadingus",
-          "message": "what have i done?!"
-        },
-        {
-          "username": "super",
-          "message": "wow"
+          "id": 2,
+          "name": "bananaChannel",
+          "messages": []
         }
       ]
     }

@@ -29,11 +29,19 @@
     border-right: 1px solid #4c3a5c;
 }
 
-.right-half {
+.middle-half {
     flex: 5.5;
     padding: 10px;
     overflow-y: auto;
     background-color: #352d44; /* Match chat container background */
+}
+
+.right-half {
+    flex: 0.5;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: #352d44; /* Match chat container background */
+    border-left: 1px solid #4c3a5c;
 }
 
 .chat-messages {

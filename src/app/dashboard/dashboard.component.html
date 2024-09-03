@@ -15,32 +15,48 @@
         <!-- Chat Section -->
         <div class="group-chat-container" *ngIf="selectedGroup">
           <div class="top-section">
-            <h2>Group Chat: {{ selectedGroup }}</h2>
+            <h2>Group Chat: {{ selectedGroup.name }}</h2>
             <!-- Add User to Group Button (for Group Admin and Super Admin) -->
             <div *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'">
               <button class="btn btn-primary mt-3" (click)="showAddUserToGroupModal()">Add User to Group</button>
+              <button class="btn btn-primary mt-3" (click)="showCreateChannelModal()">Create Channel</button>
             </div>
           </div>
+
           <div class="content-section">
             <div class="left-half">
+              <div class="channel-list">
+                <h4>Channels</h4>
+                <ul>
+                  <li *ngFor="let channel of selectedGroup.channels" (click)="selectChannel(channel)"
+                    [class.selected]="channel === selectedChannel">
+                    {{ channel.name }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="middle-half">
+              <div class="chat-messages">
+                <p *ngFor="let message of selectedChannel?.messages">{{ message.username }}: {{ message.message }}</p>
+              </div>
+            </div>
+
+            <div class="right-half">
               <div class="user-list">
+                <h4>Users</h4>
                 <p *ngFor="let user of allUsers">
-                  <ng-container *ngIf="selectedGroup && user.groups.includes(selectedGroup)">
+                  <ng-container *ngIf="selectedGroup && user.groups.includes(selectedGroup.name)">
                     {{ user.username }}
                   </ng-container>
                 </p>
               </div>
             </div>
-            <div class="right-half">
-              <div class="chat-messages">
-                <p *ngFor="let message of messages">{{ message }}</p>
-              </div>
-            </div>
           </div>
         </div>
 
-        <div class="text-box" *ngIf="selectedGroup">
-          <input type="text" class="chat-input" placeholder="Message..."/>
+        <div class="text-box" *ngIf="selectedChannel">
+          <input type="text" class="chat-input" placeholder="Message..." />
           <button class="send-button">Send</button>
         </div>
       </div>
@@ -67,7 +83,7 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="addUserToGroupModalLabel">Add User to {{ selectedGroup }}</h5>
+              <h5 class="modal-title" id="addUserToGroupModalLabel">Add User to {{ selectedGroup?.name }}</h5>
               <button type="button" class="btn-close" aria-label="Close" (click)="cancel()"></button>
             </div>
             <div class="modal-body">
@@ -83,12 +99,35 @@
                 <div class="mb-3">
                   <label for="selectGroup" class="form-label">Select Group:</label>
                   <select id="selectGroup" [(ngModel)]="selectedGroup" class="form-select" name="selectGroup" disabled>
-                    <option [value]="selectedGroup">
-                      {{ selectedGroup }}
+                    <option [value]="selectedGroup?.name">
+                      {{ selectedGroup?.name }}
                     </option>
                   </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Add User to Group</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal for Creating a New Channel -->
+      <div class="modal fade" id="createChannelModal" tabindex="-1" aria-labelledby="createChannelModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="createChannelModalLabel">Create Channel in {{ selectedGroup?.name }}</h5>
+              <button type="button" class="btn-close" aria-label="Close" (click)="cancel()"></button>
+            </div>
+            <div class="modal-body">
+              <form (submit)="createChannel()">
+                <div class="mb-3">
+                  <label for="channelName" class="form-label">Channel Name</label>
+                  <input type="text" class="form-control" id="channelName" [(ngModel)]="newChannelName"
+                    name="channelName" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Channel</button>
               </form>
             </div>
           </div>
@@ -134,7 +173,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </main>
