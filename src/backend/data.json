@@ -2,19 +2,39 @@
   "groups": [
     {
       "id": 1,
-      "name": "Admin Chat"
+      "name": "Admin Chat",
+      "messages": []
     },
     {
       "id": 2,
-      "name": "Test"
+      "name": "Test",
+      "messages": []
     },
     {
       "id": 3,
-      "name": "Banana"
-    },
-    {
-      "id": 4,
-      "name": "Terrific"
+      "name": "Banana",
+      "messages": [
+        {
+          "username": "super",
+          "message": "Shadingus, you're in trouble."
+        },
+        {
+          "username": "super",
+          "message": "test"
+        },
+        {
+          "username": "super",
+          "message": "hehehe"
+        },
+        {
+          "username": "shadingus",
+          "message": "what have i done?!"
+        },
+        {
+          "username": "super",
+          "message": "wow"
+        }
+      ]
     }
   ],
   "users": [
@@ -25,6 +45,7 @@
       "password": "123",
       "role": "Super Admin",
       "groups": [
+        "Test",
         "Admin Chat"
       ]
     },
@@ -40,13 +61,11 @@
     },
     {
       "id": 3,
-      "username": "group_admin",
-      "email": "someone@email.com",
+      "username": "groupAdmin",
+      "email": "groupadmin@admin.com",
       "password": "admin",
       "role": "Group Admin",
-      "groups": [
-        "Admin Chat"
-      ]
+      "groups": []
     }
   ]
 }

@@ -61,7 +61,7 @@ app.post('/login', (req, res) => {
             role: user.role,
             groups: user.groups
         },
-     });
+    });
 });
 
 app.get('/users', (req, res) => {
@@ -113,7 +113,7 @@ app.post('/groups', (req, res) => {
     groups.push(newGroup);
     saveData();
     res.json(newGroup);
-})
+});
 
 app.post('/groups/:groupId/add-user', (req, res) => {
     const { groupId } = req.params;
@@ -136,11 +136,44 @@ app.post('/groups/:groupId/add-user', (req, res) => {
         return res.json({ message: 'User added to group.', user });
     } else {
         return res.status(400).json({ error: 'User is already in this group.' });
+    };
+});
+
+app.post('/groups/:groupId/messages', (req, res) => {
+    const { groupId } = req.params;
+    const { username, message } = req.body;
+
+    const group = groups.find(group => group.id === parseInt(groupId, 10));
+
+    if (!group) {
+        return res.status(404).json({ error: 'Group not found.' });
     }
-})
+
+    const newMessage = {
+        username,
+        message,
+    };
+
+    group.messages.push(newMessage);
+    saveData();
+
+    return res.json({ message: 'Message added successfully.', newMessage });
+});
+
+app.get('/groups/:groupId/messages', (req, res) => {
+    const { groupId } = req.params;
+
+    const group = groups.find(group => group.id === parseInt(groupId, 10));
+
+    if (!group) {
+        return res.status(404).json({ error: 'Group not found.' });
+    }
+
+    return res.json(group.messages);
+});
 
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
     console.log(`Server is running on port http://localhost:${port}`);
-})
+});

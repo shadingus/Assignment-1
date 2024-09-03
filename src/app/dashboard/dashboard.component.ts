@@ -32,11 +32,10 @@ export class DashboardComponent implements OnInit {
 
   private modalInstance: any;
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router, private http: HttpClient) { }
 
   ngOnInit() {
     const storedUser = sessionStorage.getItem('user');
-  
     if (storedUser) {
       this.user = JSON.parse(storedUser);
       console.log('User role:', this.user.role);  // Log user role for debugging
@@ -45,15 +44,33 @@ export class DashboardComponent implements OnInit {
       console.log('No user is logged in!');
       return; // Stop further execution if no user is logged in
     }
-  
     this.loadUsersAndGroups();
   }
-  
 
-  selectGroup(group: string | null) {
-    this.selectedGroup = group;
-    console.log(`Group selected: ${group}.`);
-    this.messages = [];
+  selectGroup(groupName: string | null) {
+    if (groupName) {
+      const group = this.groups.find(g => g.name === groupName);
+      if (group) {
+        this.selectedGroup = groupName;
+        console.log(`Group selected: ${groupName} (ID: ${group.id})`);
+        // Use the group ID to load messages from the backend
+        this.http.get<any[]>(`/groups/${group.id}/messages`).subscribe({
+          next: (messages) => {
+            // Transform the array of message objects into strings for display
+            this.messages = messages.map(msg => `${msg.username}: ${msg.message}`);
+          },
+          error: (error) => {
+            console.error('Error loading messages:', error);
+          }
+        });
+      } else {
+        console.error('Group not found!');
+        this.messages = [];
+      }
+    } else {
+      this.selectedGroup = null;
+      this.messages = [];
+    };
   };
 
   showModal() {
@@ -66,15 +83,15 @@ export class DashboardComponent implements OnInit {
 
   showAddUserToGroupModal() {
     // Load users and groups each time the modal is opened
-    this.loadUsersAndGroups(); 
-  
+    this.loadUsersAndGroups();
+
     const modalElement = document.getElementById('addUserToGroupModal');
     if (modalElement) {
       this.modalInstance = new bootstrap.Modal(modalElement);
       this.modalInstance.show();
     }
   }
-  
+
   loadUsersAndGroups() {
     // Load groups for all roles
     this.http.get<{ id: number; name: string }[]>('/groups').subscribe((groups) => {
@@ -84,7 +101,7 @@ export class DashboardComponent implements OnInit {
         this.groups = groups;
       }
     });
-  
+
     // Load users only for Super Admin or Group Admin
     if (this.user.role === 'Super Admin' || this.user.role === 'Group Admin') {
       this.http.get<any[]>('/users').subscribe((users) => {
@@ -92,14 +109,13 @@ export class DashboardComponent implements OnInit {
       });
     }
   }
-  
 
   addUserToGroup() {
     if (this.selectedGroup && this.selectedUserId) {
       console.log(`Adding user ${this.selectedUserId} to group ${this.selectedGroup}`);
-      
+
       const selectedGroupId = this.groups.find(group => group.name === this.selectedGroup)?.id;
-  
+
       if (selectedGroupId) {
         this.http.post(`/groups/${selectedGroupId}/add-user`, { userId: this.selectedUserId }).subscribe({
           next: (response: any) => {
@@ -121,7 +137,7 @@ export class DashboardComponent implements OnInit {
       alert('Please select a group and a user.');
     };
   };
-  
+
   createGroup() {
     const trimmedGroupName = this.newGroupName.trim();
 
@@ -163,7 +179,6 @@ export class DashboardComponent implements OnInit {
       }
     });
   };
-  
 
   cancel() {
     if (this.modalInstance) {
@@ -177,13 +192,29 @@ export class DashboardComponent implements OnInit {
   };
 
   sendMessage() {
-    if (this.newMessage.trim()) {
-      const message = `${this.user.username}: ${this.newMessage}`;
-      this.messages.push(message);
-      const storedMessages = JSON.parse(sessionStorage.getItem(`messages-${this.selectedGroup}`) || '[]');
-      storedMessages.push(message);
-      sessionStorage.setItem(`messages-${this.selectGroup}`, JSON.stringify(storedMessages));
-      this.newMessage = '';
+    if (this.newMessage.trim() && this.selectedGroup) {
+      const group = this.groups.find(g => g.name === this.selectedGroup);
+
+      if (group) {
+        const messageData = {
+          username: this.user.username,
+          message: this.newMessage
+        };
+
+        // Use the group ID to send the message to the backend
+        this.http.post(`/groups/${group.id}/messages`, messageData).subscribe({
+          next: (response: any) => {
+            const messageString = `${response.newMessage.username}: ${response.newMessage.message}`;
+            this.messages.push(messageString);
+            this.newMessage = ''; // Clear the input field
+          },
+          error: (error) => {
+            console.error('Error sending message:', error);
+          }
+        });
+      } else {
+        console.error('Group not found!');
+      };
     };
   };
 
