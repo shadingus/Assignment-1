@@ -139,39 +139,6 @@ app.post('/groups/:groupId/add-user', (req, res) => {
     };
 });
 
-app.post('/groups/:groupId/messages', (req, res) => {
-    const { groupId } = req.params;
-    const { username, message } = req.body;
-
-    const group = groups.find(group => group.id === parseInt(groupId, 10));
-
-    if (!group) {
-        return res.status(404).json({ error: 'Group not found.' });
-    }
-
-    const newMessage = {
-        username,
-        message,
-    };
-
-    group.messages.push(newMessage);
-    saveData();
-
-    return res.json({ message: 'Message added successfully.', newMessage });
-});
-
-app.get('/groups/:groupId/messages', (req, res) => {
-    const { groupId } = req.params;
-
-    const group = groups.find(group => group.id === parseInt(groupId, 10));
-
-    if (!group) {
-        return res.status(404).json({ error: 'Group not found.' });
-    }
-
-    return res.json(group.messages);
-});
-
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {

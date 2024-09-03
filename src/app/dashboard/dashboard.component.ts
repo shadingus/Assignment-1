@@ -15,8 +15,6 @@ import { Router } from '@angular/router';
 export class DashboardComponent implements OnInit {
   user: any = {};
   selectedGroup: string | null = null;
-  newMessage: string = '';
-  messages: string[] = [];
   newGroupName: string = '';
   groups: { id: number; name: string }[] = [];
   allUsers: any[] = [];
@@ -53,23 +51,11 @@ export class DashboardComponent implements OnInit {
       if (group) {
         this.selectedGroup = groupName;
         console.log(`Group selected: ${groupName} (ID: ${group.id})`);
-        // Use the group ID to load messages from the backend
-        this.http.get<any[]>(`/groups/${group.id}/messages`).subscribe({
-          next: (messages) => {
-            // Transform the array of message objects into strings for display
-            this.messages = messages.map(msg => `${msg.username}: ${msg.message}`);
-          },
-          error: (error) => {
-            console.error('Error loading messages:', error);
-          }
-        });
       } else {
         console.error('Group not found!');
-        this.messages = [];
       }
     } else {
       this.selectedGroup = null;
-      this.messages = [];
     };
   };
 
@@ -189,33 +175,6 @@ export class DashboardComponent implements OnInit {
   logout() {
     sessionStorage.removeItem('user');
     this.router.navigate(['/login']);
-  };
-
-  sendMessage() {
-    if (this.newMessage.trim() && this.selectedGroup) {
-      const group = this.groups.find(g => g.name === this.selectedGroup);
-
-      if (group) {
-        const messageData = {
-          username: this.user.username,
-          message: this.newMessage
-        };
-
-        // Use the group ID to send the message to the backend
-        this.http.post(`/groups/${group.id}/messages`, messageData).subscribe({
-          next: (response: any) => {
-            const messageString = `${response.newMessage.username}: ${response.newMessage.message}`;
-            this.messages.push(messageString);
-            this.newMessage = ''; // Clear the input field
-          },
-          error: (error) => {
-            console.error('Error sending message:', error);
-          }
-        });
-      } else {
-        console.error('Group not found!');
-      };
-    };
   };
 
   deleteUser(userId: number) {

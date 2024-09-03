@@ -1,23 +1,71 @@
+.group-chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.top-section {
+    flex: 0 0 60px; /* Adjust height as needed */
+    background-color: #2b2433;
+    padding: 10px;
+    border-bottom: 1px solid #4c3a5c;
+    color: white;
+    text-align: center;
+}
+
+.content-section {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    overflow: hidden; /* Hide any overflow */
+}
+
+.left-half {
+    flex: 0.5;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: #352d44; /* Match chat container background */
+    border-right: 1px solid #4c3a5c;
+}
+
+.right-half {
+    flex: 5.5;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: #352d44; /* Match chat container background */
+}
+
+.chat-messages {
+    max-height: 100%;
+    overflow-y: auto;
+}
+
+.user-list {
+    max-height: 100%;
+    overflow-y: auto;
+}
+
 .chat-container {
-    padding: 20px;
+    padding: 0; /* Remove padding since it's handled in children */
     background: #352d44;
     width: 97vw;
     height: 88vh;
-    margin: 0px 20px 20px 20px;
+    margin: 20px 20px 20px 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     border-radius: 30px;
-    overflow: auto;
     color: white;
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
 }
 
 .text-box {
     display: flex;
     width: 100%;
-    margin-top: auto;
+    padding: 10px;
+    border-top: 1px solid #4c3a5c;
+    background-color: #2b2433;
 }
 
 .chat-input {
@@ -67,7 +115,9 @@
     flex-grow: 1;
 }
 
-.new-group-button {
+.new-group-button,
+.dashboard-button,
+.group-button {
     width: 50px;
     height: 50px;
     margin-left: 10px;
@@ -83,27 +133,9 @@
     flex-shrink: 0;
 }
 
-.dashboard-button {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-    background-color: #4c3a5c;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.2em;
-    text-align: center;
-    line-height: 50px;
-    transition: background-color 0.3s;
-    flex-shrink: 0;
-}
-
-.new-group-button:hover {
-    background-color: #6b5179;
-}
-
-.dashboard-button:hover {
+.new-group-button:hover,
+.dashboard-button:hover,
+.group-button:hover {
     background-color: #6b5179;
 }
 
@@ -115,30 +147,10 @@
     flex-shrink: 0;
 }
 
-.group-button {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-    background-color: #4c3a5c;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.2em;
-    text-align: center;
-    line-height: 50px;
-    transition: background-color 0.3s;
-    flex-shrink: 0;
-}
-
-.group-button:hover {
-    background-color: #6b5179;
-}
-
 .dashboard-container {
     background: linear-gradient(45deg, #909cff, #8200ff, #bf00ff);
     display: flex;
-    flex-direction: column; /* Stack chat-container and group-container vertically */
+    flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     min-height: 100vh;
