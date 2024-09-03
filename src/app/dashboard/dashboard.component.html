@@ -7,11 +7,28 @@
           <p>Email: {{ user.email }}</p>
           <p>ID: {{ user.id }}</p>
           <p>Role: {{ user.role }}</p>
-          <p>Groups: {{ user.groups.join(', ') }}</p>
+          <p>Groups: {{ user.groups && user.groups.length > 0 ? user.groups.join(', ') : 'No groups assigned' }}</p>
           <p>Select a group to view the chat.</p>
           <button class="btn btn-danger" (click)="logout()">Logout</button>
         </div>
 
+        <div *ngIf="user.role === 'Super Admin'">
+          <h2>All Users</h2>
+          <ul>
+            <li *ngFor="let usr of allUsers">
+              {{ usr.username }} ({{ usr.role }})
+              <button (click)="deleteUser(usr.id)" class="btn btn-danger btn-sm">Delete</button>
+            </li>
+          </ul>
+
+          <button class="btn btn-primary" (click)="showCreateUserModal()">Create New User</button>
+        </div>
+
+        <!-- Group Admin Section: Add Users to Groups -->
+        <div *ngIf="user.role === 'Group Admin'">
+          <!-- Add User to Group Button -->
+          <button class="btn btn-primary mt-3" (click)="showAddUserToGroupModal()">Add User to Group</button>
+        </div>
 
         <div *ngIf="selectedGroup">
           <h1>Chatroom for {{ selectedGroup }}</h1>
@@ -20,6 +37,7 @@
             <p *ngFor="let message of messages">{{ message }}</p>
           </div>
         </div>
+
         <div class="text-box">
           <input type="text" class="chat-input" placeholder="Message ${group.name}" [(ngModel)]="newMessage" />
           <button class="send-button" (click)="sendMessage()">Send</button>
@@ -35,6 +53,78 @@
           </button>
           <div class="spacer"></div>
           <button type="button" class="new-group-button" (click)="showModal()">+</button>
+        </div>
+      </div>
+
+      <!---Add User to Group Modal--->
+      <div class="modal fade" id="addUserToGroupModal" tabindex="-1" aria-labelledby="addUserToGroupModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addUserToGroupModalLabel">Add User to Group</h5>
+              <button type="button" class="btn-close" aria-label="Close" (click)="cancel()"></button>
+            </div>
+            <div class="modal-body">
+              <form (submit)="addUserToGroup()">
+                <div class="mb-3">
+                  <label for="selectUser" class="form-label">Select User:</label>
+                  <select id="selectUser" [(ngModel)]="selectedUserId" class="form-select" name="selectUser" required>
+                    <option *ngFor="let usr of allUsers" [value]="usr.id">
+                      {{ usr.username }} ({{ usr.role }})
+                    </option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="selectGroup" class="form-label">Select Group:</label>
+                  <select id="selectGroup" [(ngModel)]="selectedGroup" class="form-select" name="selectGroup" required>
+                    <option *ngFor="let group of groups" [value]="group.name">
+                      {{ group.name }}
+                    </option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Add User to Group</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>           
+
+      <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="createUserModalLabel">Create New User</h5>
+              <button type="button" class="btn-close" aria-label="Close" (click)="cancel()"></button>
+            </div>
+            <div class="modal-body">
+              <form (submit)="createUser()">
+                <div class="mb-3">
+                  <label for="username" class="form-label">Username</label>
+                  <input type="text" class="form-control" id="username" [(ngModel)]="newUser.username" name="username"
+                    required>
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="email" [(ngModel)]="newUser.email" name="email" required>
+                </div>
+                <div class="mb-3">
+                  <label for="password" class="form-label">Password</label>
+                  <input type="password" class="form-control" id="password" [(ngModel)]="newUser.password"
+                    name="password" required>
+                </div>
+                <div class="mb-3">
+                  <label for="role" class="form-label">Role</label>
+                  <select class="form-select" [(ngModel)]="newUser.role" name="role" required>
+                    <option value="User">User</option>
+                    <option value="Group Admin">Group Admin</option>
+                    <option value="Super Admin">Super Admin</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Create User</button>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
 
