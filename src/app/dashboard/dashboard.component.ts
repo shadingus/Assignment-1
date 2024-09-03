@@ -21,15 +21,14 @@ interface Group {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  styleUrls: ['./dashboard.component.css']
 })
 
 export class DashboardComponent implements OnInit {
   user: any = {};
+  messages: string[] = [];
   selectedGroup: Group | null = null;
   selectedChannel: Channel | null = null;
-  newMessage: string = '';
-  messages: string[] = [];
   newGroupName: string = '';
   newChannelName: string = '';
   groups: Group[] = [];
@@ -54,14 +53,13 @@ export class DashboardComponent implements OnInit {
       this.user = JSON.parse(storedUser);
       this.user.groups = this.user.groups || [];
     } else {
-      console.log('No user is logged in!');
       return;
     };
     this.loadUsersAndGroups();
   };
 
   loadUsersAndGroups() {
-    this.http.get<{ id: number; name: string, channels: any[] }[]>('/groups').subscribe((groups) => {
+    this.http.get<Group[]>('/groups').subscribe((groups) => {
       if (this.user.role === 'User') {
         this.groups = groups.filter(group => this.user.groups.includes(group.name));
       } else {
@@ -85,16 +83,14 @@ export class DashboardComponent implements OnInit {
       } else {
         this.selectedGroup = null;
         this.selectedChannel = null;
-        this.messages = [];
-      }
+      };
     } else {
       this.selectedGroup = null;
       this.selectedChannel = null;
-      this.messages = [];
     };
   };
 
-  selectChannel(channel: any) {
+  selectChannel(channel: Channel) {
     if (channel) {
       this.selectedChannel = channel;
       this.loadMessages(channel);
@@ -114,7 +110,7 @@ export class DashboardComponent implements OnInit {
           this.selectedUserId = null;
           if (this.modalInstance) {
             this.modalInstance.hide();
-          }
+          };
         },
         error: (error) => {
           alert(error.error.error);
@@ -127,15 +123,13 @@ export class DashboardComponent implements OnInit {
 
   createGroup() {
     const trimmedGroupName = this.newGroupName.trim();
-
     if (trimmedGroupName) {
       const newGroup: Group = {
         id: this.groups.length + 1,
         name: trimmedGroupName,
         channels: []  // Initialize an empty channels array
       };
-
-      this.groups.push(newGroup); // Now, the newGroup object matches the Group interface
+      this.groups.push(newGroup);
       this.newGroupName = '';
     } else {
       alert('Please enter a group name.');
@@ -146,26 +140,22 @@ export class DashboardComponent implements OnInit {
     if (!this.selectedGroup || !this.newChannelName.trim()) {
       alert('Please enter a channel name.');
       return;
-    }
+    };
 
     const groupId = this.selectedGroup.id;
-
     const channelData = { name: this.newChannelName.trim() };
 
     this.http.post(`/groups/${groupId}/channels`, channelData).subscribe({
       next: (response: any) => {
-        // Assuming the response contains the newly created channel
         this.selectedGroup?.channels.push(response.newChannel);
-        this.newChannelName = ''; // Clear the input field
-        this.modalInstance.hide(); // Close the modal
+        this.newChannelName = '';
+        this.modalInstance.hide();
       },
       error: (error) => {
-        console.error('Error creating channel:', error);
         alert('There was an error creating the channel. Please try again.');
       }
     });
-  }
-
+  };
 
   createUser() {
     this.http.post<any>('/users', this.newUser).subscribe({
