@@ -36,25 +36,19 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     const storedUser = sessionStorage.getItem('user');
-
+  
     if (storedUser) {
       this.user = JSON.parse(storedUser);
+      console.log('User role:', this.user.role);  // Log user role for debugging
       this.user.groups = this.user.groups || [];
     } else {
       console.log('No user is logged in!');
-    };
-
-    this.http.get<{ id: number; name: string }[]>('/groups').subscribe((groups) => {
-      this.groups = groups;
-      sessionStorage.setItem('groups', JSON.stringify(groups));
-    });
-
-    if (this.user.role === 'Super Admin') {
-      this.http.get<any[]>('/users').subscribe((users) => {
-        this.allUsers = users;
-      });
-    };
-  };
+      return; // Stop further execution if no user is logged in
+    }
+  
+    this.loadUsersAndGroups();
+  }
+  
 
   selectGroup(group: string | null) {
     this.selectedGroup = group;
@@ -81,15 +75,24 @@ export class DashboardComponent implements OnInit {
     }
   }
   
-  loadUsersAndGroups() {    
-    this.http.get<any[]>('/users').subscribe((users) => {
-      this.allUsers = users;
+  loadUsersAndGroups() {
+    // Load groups for all roles
+    this.http.get<{ id: number; name: string }[]>('/groups').subscribe((groups) => {
+      if (this.user.role === 'User') {
+        this.groups = groups.filter(group => this.user.groups.includes(group.name));
+      } else {
+        this.groups = groups;
+      }
     });
   
-    this.http.get<{ id: number; name: string }[]>('/groups').subscribe((groups) => {
-      this.groups = groups;
-    });
-  }  
+    // Load users only for Super Admin or Group Admin
+    if (this.user.role === 'Super Admin' || this.user.role === 'Group Admin') {
+      this.http.get<any[]>('/users').subscribe((users) => {
+        this.allUsers = users;
+      });
+    }
+  }
+  
 
   addUserToGroup() {
     if (this.selectedGroup && this.selectedUserId) {
@@ -175,12 +178,14 @@ export class DashboardComponent implements OnInit {
 
   sendMessage() {
     if (this.newMessage.trim()) {
-      this.messages.push(`${this.user.username}: ${this.newMessage}`);
+      const message = `${this.user.username}: ${this.newMessage}`;
+      this.messages.push(message);
+      const storedMessages = JSON.parse(sessionStorage.getItem(`messages-${this.selectedGroup}`) || '[]');
+      storedMessages.push(message);
+      sessionStorage.setItem(`messages-${this.selectGroup}`, JSON.stringify(storedMessages));
       this.newMessage = '';
     };
   };
-
-
 
   deleteUser(userId: number) {
     if (confirm('Are you sure you want to delete this user?')) {

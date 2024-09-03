@@ -34,7 +34,9 @@
       "email": "shadingus@email.com",
       "password": "password1",
       "role": "User",
-      "groups": []
+      "groups": [
+        "Banana"
+      ]
     },
     {
       "id": 3,
@@ -43,7 +45,7 @@
       "password": "admin",
       "role": "Group Admin",
       "groups": [
-        "Banana"
+        "Admin Chat"
       ]
     }
   ]

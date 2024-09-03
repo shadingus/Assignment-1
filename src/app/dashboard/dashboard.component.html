@@ -10,26 +10,27 @@
           <p>Groups: {{ user.groups && user.groups.length > 0 ? user.groups.join(', ') : 'No groups assigned' }}</p>
           <p>Select a group to view the chat.</p>
           <button class="btn btn-danger" (click)="logout()">Logout</button>
+
+          <!-- Super Admin and Group Admin Section -->
+          <div *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'">
+            <!-- Add User to Group Button -->
+            <button class="btn btn-primary mt-3" (click)="showAddUserToGroupModal()">Add User to Group</button>
+          </div>
+
+          <!-- Super Admin Section -->
+          <div *ngIf="user.role === 'Super Admin'">
+            <h2>All Users</h2>
+            <ul>
+              <li *ngFor="let usr of allUsers">
+                {{ usr.username }} ({{ usr.role }})
+                <button (click)="deleteUser(usr.id)" class="btn btn-danger btn-sm">Delete</button>
+              </li>
+            </ul>
+            <button class="btn btn-primary" (click)="showCreateUserModal()">Create New User</button>
+          </div>
         </div>
 
-        <div *ngIf="user.role === 'Super Admin'">
-          <h2>All Users</h2>
-          <ul>
-            <li *ngFor="let usr of allUsers">
-              {{ usr.username }} ({{ usr.role }})
-              <button (click)="deleteUser(usr.id)" class="btn btn-danger btn-sm">Delete</button>
-            </li>
-          </ul>
-
-          <button class="btn btn-primary" (click)="showCreateUserModal()">Create New User</button>
-        </div>
-
-        <!-- Group Admin Section: Add Users to Groups -->
-        <div *ngIf="user.role === 'Group Admin'">
-          <!-- Add User to Group Button -->
-          <button class="btn btn-primary mt-3" (click)="showAddUserToGroupModal()">Add User to Group</button>
-        </div>
-
+        <!-- Chat Section -->
         <div *ngIf="selectedGroup">
           <h1>Chatroom for {{ selectedGroup }}</h1>
           <p>{{ selectedGroup }} chat content goes here...</p>
@@ -44,6 +45,7 @@
         </div>
       </div>
 
+      <!-- Group List -->
       <div class="group-container">
         <div class="group-list">
           <button class="dashboard-button" (click)="selectGroup(null)">D</button>
@@ -52,12 +54,16 @@
             {{ group.name.charAt(0) }}
           </button>
           <div class="spacer"></div>
-          <button type="button" class="new-group-button" (click)="showModal()">+</button>
+
+          <!-- Super Admin and Group Admin: Create Group Button -->
+          <button *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'" type="button"
+            class="new-group-button" (click)="showModal()">+</button>
         </div>
       </div>
 
-      <!---Add User to Group Modal--->
-      <div class="modal fade" id="addUserToGroupModal" tabindex="-1" aria-labelledby="addUserToGroupModalLabel" aria-hidden="true">
+      <!-- Modal for Adding a User to a Group -->
+      <div class="modal fade" id="addUserToGroupModal" tabindex="-1" aria-labelledby="addUserToGroupModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -87,8 +93,9 @@
             </div>
           </div>
         </div>
-      </div>           
+      </div>
 
+      <!-- Modal for Creating a New User -->
       <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
@@ -128,28 +135,6 @@
         </div>
       </div>
 
-      <div class="modal fade" id="newGroupModal" tabindex="-1" aria-labelledby="newGroupModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="newGroupModalLabel">Create New Group</h5>
-            </div>
-            <div class="modal-body">
-              <form>
-                <div class="mb-3">
-                  <label for="groupName" class="form-label">Group Name</label>
-                  <input type="text" class="form-control" id="groupName" [(ngModel)]="newGroupName" name="groupName"
-                    required>
-                </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" (click)="cancel()">Close</button>
-              <button type="button" class="btn btn-primary" (click)="createGroup()">Create Group</button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </main>
