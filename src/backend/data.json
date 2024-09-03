@@ -65,7 +65,9 @@
       "email": "groupadmin@admin.com",
       "password": "admin",
       "role": "Group Admin",
-      "groups": []
+      "groups": [
+        "Banana"
+      ]
     }
   ]
 }

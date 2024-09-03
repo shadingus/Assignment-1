@@ -139,6 +139,18 @@ app.post('/groups/:groupId/add-user', (req, res) => {
     };
 });
 
+app.get('/groups/:groupId/messages', (req, res) => {
+    const { groupId } = req.params;
+
+    const group = groups.find(group => group.id === parseInt(groupId, 10));
+
+    if (!group) {
+        return res.status(404).json({ error: 'Group not found.' });
+    }
+
+    return res.json(group.messages);
+});
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
