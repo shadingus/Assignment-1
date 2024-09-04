@@ -18,14 +18,12 @@
                 <th scope="col">Role</th>
                 <th scope="col">Option 1</th>
                 <th scope="col">Option 2</th>
-                <th scope="col">Option 3</th>
               </thead>
               <tbody>
                 <tr *ngFor="let usr of allUsers">
                   <td>{{ usr.username }}</td>
                   <td>{{ usr.role }}</td>
-                  <td><button class="btn btn-primary btn-sm">Promote</button></td>
-                  <td><button class="btn btn-warning btn-sm">Edit</button></td>
+                  <td><button class="btn btn-primary btn-sm" (click)="openPromoteModal(usr)">Promote</button></td>
                   <td><button (click)="deleteUser(usr.id)" class="btn btn-danger btn-sm">Delete</button></td>
                 </tr>
               </tbody>
@@ -49,13 +47,17 @@
           <div class="content-section">
             <div class="left-half">
               <div class="channel-list">
-                <h4>Channels</h4>
-                <ul>
-                  <li *ngFor="let channel of selectedGroup.channels" (click)="selectChannel(channel)"
-                    [class.selected]="channel === selectedChannel">
-                    {{ channel.name }}
-                  </li>
-                </ul>
+                <table class="table table-bordered table-hover table-striped">
+                  <thead>
+                    <th scope="col">Channels</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let channel of selectedGroup.channels" (click)="selectChannel(channel)"
+                      [class.selected]="channel === selectedChannel">
+                      <td>{{ channel.name }}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
 
@@ -67,12 +69,20 @@
 
             <div class="right-half">
               <div class="user-list">
-                <h4>Users</h4>
-                <p *ngFor="let user of allUsers">
-                  <ng-container *ngIf="selectedGroup && user.groups.includes(selectedGroup.name)">
-                    {{ user.username }}
-                  </ng-container>
-                </p>
+                <table class="table table-bordered table-hover table-striped">
+                  <thead>
+                    <th scope="col">Users</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let user of allUsers">
+                      <td>
+                        <ng-container *ngIf="selectedGroup && user.groups.includes(selectedGroup.name)">
+                          {{ user.username }}
+                        </ng-container>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -205,6 +215,32 @@
           </div>
         </div>
       </div>
+
+      <!-- Promote User Modal -->
+      <div *ngIf="user.role === 'Super Admin'" class="modal fade" id="promoteUserModal" tabindex="-1" aria-labelledby="promoteUserModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="promoteUserModalLabel">Promote User</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Select the new role for {{ selectedUser.username }}:</p>
+              <select [(ngModel)]="selectedRole" class="form-select">
+                <option value="User">User</option>
+                <option value="Group Admin">Group Admin</option>
+                <option value="Super Admin">Super Admin</option>
+              </select>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="cancel()">Close</button>
+              <button type="button" class="btn btn-primary" (click)="promoteUser()">Promote</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </main>

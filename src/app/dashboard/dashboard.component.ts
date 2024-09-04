@@ -44,6 +44,8 @@ export class DashboardComponent implements OnInit {
   groups: Group[] = [];
   allUsers: any[] = [];
   selectedUserId: number | null = null;
+  selectedUser: any;
+  selectedRole: any;
 
   newUser: User = {
     id: 0,
@@ -108,15 +110,17 @@ export class DashboardComponent implements OnInit {
 
   loadUsersAndGroups() {
     const groups = this.localStorageService.getItem('groups') || [];
-    if (this.user.role === 'User') {
+    if (this.user.role === 'User' || this.user.role === 'Group Admin') {
       this.groups = groups.filter((group: { name: any }) => this.user.groups.includes(group.name));
-    } else {
+    }
+    else if (this.user.role === 'Super Admin') {
       this.groups = groups;
-    };
-    if (this.user.role === 'Super Admin' || this.user.role === 'Group Admin') {
+    }
+    if (this.user.role === 'Super Admin') {
       this.allUsers = this.localStorageService.getItem('users') || [];
     };
   };
+
 
   selectGroup(groupName: string | null) {
     if (groupName) {
@@ -156,7 +160,7 @@ export class DashboardComponent implements OnInit {
       // Find the selected group
       const group = groups.find((g: any) => g.id === selectedGroupId);
       if (group) {
-  
+
         // Retrieve users from local storage
         let users = this.localStorageService.getItem('users') || [];
         if (typeof users === 'string') {
@@ -186,7 +190,7 @@ export class DashboardComponent implements OnInit {
       alert('Please select a group and a user.');
     };
   };
-  
+
   createGroup() {
     const trimmedGroupName = this.newGroupName.trim();
     if (trimmedGroupName) {
@@ -260,6 +264,29 @@ export class DashboardComponent implements OnInit {
       this.modalInstance.show();
     };
   };
+
+  openPromoteModal(user: any) {
+    this.selectedUser = user;
+    this.selectedRole = user.role; // Default to current role
+
+    const modalElement = document.getElementById('promoteUserModal');
+    this.modalInstance = new bootstrap.Modal(modalElement);
+    this.modalInstance.show();
+  }
+
+  promoteUser() {
+    if (this.selectedUser && this.selectedRole) {
+      this.selectedUser.role = this.selectedRole;
+      // Here, update the user role in your local storage or backend
+      const users = this.localStorageService.getItem('users') || [];
+      const updatedUsers = users.map((usr: any) => usr.id === this.selectedUser.id ? this.selectedUser : usr);
+      this.localStorageService.setItem('users', updatedUsers);
+      
+      // Optionally hide the modal
+      const modalElement = document.getElementById('promoteUserModal');
+      this.modalInstance.hide();
+    }
+  }
 
   showCreateChannelModal() {
     const modalElement = document.getElementById('createChannelModal');
