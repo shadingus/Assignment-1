@@ -10,11 +10,8 @@
           <p>Groups: {{ user.groups && user.groups.length > 0 ? user.groups.join(', ') : 'No groups assigned' }}</p>
           <p>Select a group to view the chat.</p>
           <button class="btn btn-danger" (click)="logout()">Logout</button>
-          <!-- Super Admin functionality to manage users -->
           <div *ngIf="user.role === 'Super Admin'">
             <h3>User Management</h3>
-
-            <!-- User List -->
             <h4>All Users</h4>
             <ul>
               <li *ngFor="let usr of allUsers">
@@ -22,17 +19,13 @@
                 <button (click)="deleteUser(usr.id)" class="btn btn-danger btn-sm">Delete</button>
               </li>
             </ul>
-
-            <!-- Button to open create user modal -->
             <button class="btn btn-primary" (click)="showCreateUserModal()">Create New User</button>
           </div>
         </div>
 
-        <!-- Chat Section -->
         <div class="group-chat-container" *ngIf="selectedGroup">
           <div class="top-section">
             <h2>Group Chat: {{ selectedGroup.name }}</h2>
-            <!-- Add User to Group Button (for Group Admin and Super Admin) -->
             <div *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'">
               <button class="btn btn-primary mt-3" (click)="showAddUserToGroupModal()">Add User to Group</button>
               <button class="btn btn-primary mt-3" (click)="showCreateChannelModal()">Create Channel</button>
@@ -77,7 +70,6 @@
         </div>
       </div>
 
-      <!-- Group List -->
       <div class="group-container">
         <div class="group-list">
           <button class="dashboard-button" (click)="selectGroup(null)">D</button>
@@ -87,14 +79,12 @@
           </button>
           <div class="spacer"></div>
 
-          <!-- Super Admin and Group Admin: Create Group Button -->
           <button *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'" type="button"
             class="new-group-button" (click)="showModal()">+</button>
         </div>
       </div>
 
-      <!-- Modal for Creating a New Group -->
-      <div class="modal fade" id="newGroupModal" tabindex="-1" aria-labelledby="newGroupModalLabel" aria-hidden="true">
+      <div *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'" class="modal fade" id="newGroupModal" tabindex="-1" aria-labelledby="newGroupModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -115,8 +105,7 @@
         </div>
       </div>
 
-      <!-- Modal for Adding a User to a Group -->
-      <div class="modal fade" id="addUserToGroupModal" tabindex="-1" aria-labelledby="addUserToGroupModalLabel"
+      <div *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'" class="modal fade" id="addUserToGroupModal" tabindex="-1" aria-labelledby="addUserToGroupModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -141,9 +130,7 @@
         </div>
       </div>
 
-
-      <!-- Modal for Creating a New Channel -->
-      <div class="modal fade" id="createChannelModal" tabindex="-1" aria-labelledby="createChannelModalLabel"
+      <div *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'" class="modal fade" id="createChannelModal" tabindex="-1" aria-labelledby="createChannelModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -165,8 +152,7 @@
         </div>
       </div>
 
-      <!-- Modal for Creating a New User -->
-      <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel"
+      <div *ngIf="user.role === 'Super Admin'" class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
