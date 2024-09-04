@@ -9,7 +9,6 @@
           <p>Role: {{ user.role }}</p>
           <p>Groups: {{ user.groups && user.groups.length > 0 ? user.groups.join(', ') : 'No groups assigned' }}</p>
           <p>Select a group to view the chat.</p>
-          <button class="btn btn-danger" (click)="logout()">Logout</button>
           <div class="admin-management" *ngIf="user.role === 'Super Admin'">
             <h3>User Management</h3>
             <h4>All Users</h4>
@@ -32,6 +31,9 @@
               </tbody>
             </table>
             <button class="btn btn-primary" (click)="showCreateUserModal()">Create New User</button>
+          </div>
+          <div class="user-logout">
+            <button class="btn btn-danger" (click)="logout()">Logout</button>
           </div>
         </div>
 
@@ -96,7 +98,8 @@
         </div>
       </div>
 
-      <div *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'" class="modal fade" id="newGroupModal" tabindex="-1" aria-labelledby="newGroupModalLabel" aria-hidden="true">
+      <div *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'" class="modal fade" id="newGroupModal"
+        tabindex="-1" aria-labelledby="newGroupModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -117,8 +120,8 @@
         </div>
       </div>
 
-      <div *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'" class="modal fade" id="addUserToGroupModal" tabindex="-1" aria-labelledby="addUserToGroupModalLabel"
-        aria-hidden="true">
+      <div *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'" class="modal fade"
+        id="addUserToGroupModal" tabindex="-1" aria-labelledby="addUserToGroupModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -142,8 +145,8 @@
         </div>
       </div>
 
-      <div *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'" class="modal fade" id="createChannelModal" tabindex="-1" aria-labelledby="createChannelModalLabel"
-        aria-hidden="true">
+      <div *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'" class="modal fade" id="createChannelModal"
+        tabindex="-1" aria-labelledby="createChannelModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -164,8 +167,8 @@
         </div>
       </div>
 
-      <div *ngIf="user.role === 'Super Admin'" class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel"
-        aria-hidden="true">
+      <div *ngIf="user.role === 'Super Admin'" class="modal fade" id="createUserModal" tabindex="-1"
+        aria-labelledby="createUserModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">

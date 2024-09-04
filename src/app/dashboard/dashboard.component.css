@@ -49,6 +49,10 @@
     overflow-y: auto;
 }
 
+.user-logout {
+    padding-top: 10px;
+}
+
 .user-list {
     max-height: 100%;
     overflow-y: auto;
