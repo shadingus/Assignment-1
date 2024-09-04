@@ -10,16 +10,24 @@ These updates were never specific to the frontend or backend. Whatever I felt li
 
 ### Description of Data Structures
 
-#### In the client side, there are multiple data structures that represent `users`, `groups`, `channels`, and `messages`. These structures are directly managed within Angular `components` and `LocalStorage`:
+#### In the client side, there are multiple data structures that represent `users`, `groups`, `channels`, and `messages`. These structures are directly managed within Angular `components`, `localStorage`, and `sessionStorage`:
 
 1. Users:
-    - The `User` interface in the client defines the structure of a `user`, which includes an `id`, `username`, `email`, `password`, `role`, and the `groups` that the user belongs to.
+    - The `User` interface within the `DashboardComponent` in the client defines the structure of a `user`, which includes an `id`, `username`, `email`, `password`, `role`, and the `groups` that the user belongs to.
+    - In the `LoginComponent`, a list of users is retrieved and stored in LocalStorage via the `LocalStorageService`.
+    - This list of users contains objects that follow the User interface structure.
 2. Groups:
     - The `Group` interface defines a `group`, which contains a unique `id`, `name`, and an array of `channels`.
 3. Channels:
     - The `Channels` interface represents an individual conversation space within a group. Each channel holds an array of `messages`.
 4. Messages:
     - Within each channel is an array of messages. Each message contains the `username` of the sender and the contents of the message.
+5. Session Management:
+    - Upon successful login, the authenticated user’s data (retrieved from `LocalStorage`) is stored in `sessionStorage`.
+    - This allows the user’s session to persist across different pages of the application during their browsing session.
+6. User Authentication Operation:
+    - The `onLogin()` method handles the authentication. It checks the entered `username` and `password` against the list of users in `LocalStorage`.
+    - If a match is found, it logs in the `user` by saving their details in `sessionStorage` and redirects them to the dashboard.
 
 #### On the server side, the application currently manages the same entities, but handles them with JSON objects in memory.
 
@@ -38,6 +46,15 @@ These updates were never specific to the frontend or backend. Whatever I felt li
     - When a new user is created by the `Super Admin`, their data (`username`, `email`, `password`, `role`, and `groups`) is sent to the server via a `POST` request. The server generates a new `user ID` and stores the user in the `users` array.
 
 ### Angular Architecture
+
+1. Login Component:
+    - Handles user login functionality. It captures the user’s credentials (`username` and `password`), authenticates them against stored data, and manages navigation to the dashboard.
+2. Dashboard Component:
+    - Displays user-specific data, such as `groups`, `channels`, and `messages`. It allows the user to interact with the system, such as sending `messages`, managing `groups`, and promoting other `users` (for admins).
+3. LocalStorageService:
+    - A custom service that handles data persistence by interacting with the browser's `LocalStorage`. It provides methods to retrieve and store data (e.g., `users`, `groups`) for use across the application.
+4. Routing:
+    - After successfully logging in via the `LoginComponent`, the user is routed to the `DashboardComponent` using the `Router`.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.1.
 
