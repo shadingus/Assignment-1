@@ -9,8 +9,9 @@ Updates were frequent and ranged in scale, varying from updates as small as sing
 These updates were never specific to the frontend or backend. Whatever I felt like working on was whatever got updated.
 
 ### Description of Data Structures
-In the client side, there are multiple data structures that represent `users`, `groups`, `channels`, and `messages`.
-These structures are directly managed within Angular `components` and `LocalStorage`:
+
+#### In the client side, there are multiple data structures that represent `users`, `groups`, `channels`, and `messages`. These structures are directly managed within Angular `components` and `LocalStorage`:
+
 1. Users:
     - The `User` interface in the client defines the structure of a `user`, which includes an `id`, `username`, `email`, `password`, `role`, and the `groups` that the user belongs to.
 2. Groups:
