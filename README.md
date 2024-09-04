@@ -70,3 +70,21 @@ These updates were never specific to the frontend or backend. Whatever I felt li
     - The `server.js` file serves static files from a specified path (staticPath), which points to the frontend (Angular build) directory.
 4. Global Variables:
     - `users`: An in-memory array storing user objects (id, username, email, password, role, groups) that simulates user data storage.
+
+### Serverside Routes, Parameters, Return Values, and their Purposes
+
+1. `GET /`
+    - **Purpose:** Serves the main frontend application (index.html).
+    - **Parameters:** none.
+    - **Return Value:** Returns the `index.html` file from the Angular build directory.
+2. `POST /register`
+    - **Purpose:** Registers a new user by capturing the data from the frontend and adding it to the `users` array.
+    - **Parameters:** `username`, `email`, `password`, `role`, `groups`.
+    - **Return Value:** JSON object with a message confirming the user registration and the newly created user object.
+
+### Client-Server Interactions
+
+1. Client-Side Changes:
+    - User actions (login, registration, group management) trigger updates to the display of Angular components, such as showing new users in the admin panel or updating the list of available groups and channels.
+2. Server-Side Changes:
+    - Data like user registration and role changes affect the server-side users array, and these updates are reflected in the client via responses from the server or updates to LocalStorage.
