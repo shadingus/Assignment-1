@@ -23,7 +23,7 @@
                 <tr *ngFor="let usr of allUsers">
                   <td>{{ usr.username }}</td>
                   <td>{{ usr.role }}</td>
-                  <td><button class="btn btn-primary btn-sm" (click)="openPromoteModal(usr)">Promote</button></td>
+                  <td><button class="btn btn-primary btn-sm" (click)="openPromoteModal(usr)">Change Role</button></td>
                   <td><button (click)="deleteUser(usr.id)" class="btn btn-danger btn-sm">Delete</button></td>
                 </tr>
               </tbody>
@@ -217,16 +217,17 @@
       </div>
 
       <!-- Promote User Modal -->
-      <div *ngIf="user.role === 'Super Admin'" class="modal fade" id="promoteUserModal" tabindex="-1" aria-labelledby="promoteUserModalLabel"
-        aria-hidden="true">
+      <div *ngIf="user.role === 'Super Admin'" class="modal fade" id="promoteUserModal" tabindex="-1"
+        aria-labelledby="promoteUserModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="promoteUserModalLabel">Promote User</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" class="btn-close" (click)="cancel()" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <p>Select the new role for {{ selectedUser.username }}:</p>
+              <p *ngIf="selectedUser">Select the new role for {{ selectedUser.username }}:</p>
+              <p *ngIf="!selectedUser">Error: No user selected for promotion.</p>
               <select [(ngModel)]="selectedRole" class="form-select">
                 <option value="User">User</option>
                 <option value="Group Admin">Group Admin</option>
@@ -234,13 +235,11 @@
               </select>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" (click)="cancel()">Close</button>
-              <button type="button" class="btn btn-primary" (click)="promoteUser()">Promote</button>
+              <button type="button" class="btn btn-primary" (click)="promoteUser()">Change</button>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </main>

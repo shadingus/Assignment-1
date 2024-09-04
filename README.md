@@ -1,4 +1,14 @@
-# Assignment1
+# Yappers - Assignment 1
+
+## Flynn McCooke - s5307477
+
+### Organisation of Git Repository
+Upon initialisation, I created a `dev` branch to use as my development branch when developing the system. Each time I would reach what I considered a key milestone in the system's progress, I would push that `dev` build to the `main` branch.
+Updates were frequent and ranged in scale, varying from updates as small as singular CSS line changes, to full features being implemented across consecutive updates.
+These updates were never specific to the frontend or backend. Whatever I felt like working on was whatever got updated.
+
+### Description of Data Structures
+In the client side, there are multiple data structures that represent users, groups, channels, and messages. These structures are directly managed within Angular components and LocalStorage:
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.1.
 

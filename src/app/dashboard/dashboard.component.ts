@@ -44,8 +44,8 @@ export class DashboardComponent implements OnInit {
   groups: Group[] = [];
   allUsers: any[] = [];
   selectedUserId: number | null = null;
-  selectedUser: any;
-  selectedRole: any;
+  selectedUser: any = null;
+  selectedRole: string | null = null;
 
   newUser: User = {
     id: 0,
@@ -266,13 +266,19 @@ export class DashboardComponent implements OnInit {
   };
 
   openPromoteModal(user: any) {
-    this.selectedUser = user;
-    this.selectedRole = user.role; // Default to current role
-
-    const modalElement = document.getElementById('promoteUserModal');
-    this.modalInstance = new bootstrap.Modal(modalElement);
-    this.modalInstance.show();
-  }
+    if (user) {
+      this.selectedUser = user;
+      this.selectedRole = user.role; // Default to the current role
+  
+      const modalElement = document.getElementById('promoteUserModal');
+      if (modalElement) {
+        this.modalInstance = new bootstrap.Modal(modalElement);
+        this.modalInstance.show();
+      };
+    } else {
+      alert("Error: No user selected for promotion.");
+    };
+  };
 
   promoteUser() {
     if (this.selectedUser && this.selectedRole) {
@@ -284,9 +290,14 @@ export class DashboardComponent implements OnInit {
       
       // Optionally hide the modal
       const modalElement = document.getElementById('promoteUserModal');
-      this.modalInstance.hide();
+      if (modalElement) {
+        this.modalInstance.hide();
+      }
+    } else {
+      alert("Error: No user or role selected for promotion.");
     }
   }
+  
 
   showCreateChannelModal() {
     const modalElement = document.getElementById('createChannelModal');

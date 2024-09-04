@@ -3,6 +3,7 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
+    border-radius: 30px;
 }
 
 .top-section {
@@ -59,13 +60,12 @@
 }
 
 .chat-container {
-    padding: 0; /* Remove padding since it's handled in children */
+    border-radius: 30px;
     background: #352d44;
     width: 97vw;
     height: 88vh;
     margin: 20px 20px 20px 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    border-radius: 30px;
     color: white;
     position: relative;
     display: flex;
