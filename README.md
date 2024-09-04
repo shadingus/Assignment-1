@@ -19,7 +19,9 @@ These structures are directly managed within Angular `components` and `LocalStor
     - The `Channels` interface represents an individual conversation space within a group. Each channel holds an array of `messages`.
 4. Messages:
     - Within each channel is an array of messages. Each message contains the `username` of the sender and the contents of the message.
-On the server side, the application currently manages the same entities, but handles them with JSON objects in memory.
+
+#### On the server side, the application currently manages the same entities, but handles them with JSON objects in memory.
+
 1. Users:
     - Users are stored in an array on the server, represented as JSON objects. The `user` object includes an `id`, `username`, `email`, `password`, `role`, and a list of `groups`.
 2. Groups (Handled explicitly in the frontend):
@@ -28,8 +30,9 @@ On the server side, the application currently manages the same entities, but han
     - Channels will be represented as an array within each group, containing an `id`, `name`, and `messages`.
 4. Messages:
     - Messages are stored as objects within the `messages` array inside each `channel`.
-The server currently only handles the user registration. For the sake of static functionality, registration was the only function created to be fully operational on the backend.
-This way, users can freely log in and out of the system, with the backend verifying that each user was created correctly and that the login implementation works as intended.
+
+#### The server currently only handles the user registration. For the sake of static functionality, registration was the only function created to be fully operational on the backend. This way, users can freely log in and out of the system, with the backend verifying that each user was created correctly and that the login implementation works as intended.
+
 1. User Registration (`'/register'`):
     - When a new user is created by the `Super Admin`, their data (`username`, `email`, `password`, `role`, and `groups`) is sent to the server via a `POST` request. The server generates a new `user ID` and stores the user in the `users` array.
 
