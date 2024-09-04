@@ -27,35 +27,8 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(staticPath, 'index.html'));
 });
 
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-
-    const user = users.find(user => user.username === username);
-
-    if (!user) {
-        return res.status(404).json({ error: 'User does not exist. Please contact the super admin to create your login credentials.' });
-    }
-
-    if (user.password !== password) {
-        return res.status(401).json({ error: 'Incorrect password. Please try again.' });
-    }
-
-    res.json({
-        message: 'Login successful.',
-        user: {
-            id: user.id,
-            email: user.email,
-            username: user.username,
-            role: user.role,
-            groups: user.groups
-        }
-    });
-});
-
 app.post('/register', (req, res) => {
     const { username, email, password, role, groups } = req.body;
-
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
 
     const newUser = {
         id: users.length + 1,
@@ -66,7 +39,6 @@ app.post('/register', (req, res) => {
         groups,
     }
     users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
     res.json({ message: 'User successfully registered', user: newUser });
 })
 

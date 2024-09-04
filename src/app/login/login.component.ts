@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from '../services/local-storage.service';
-
 
 @Component({
   selector: 'app-login',
@@ -16,7 +14,7 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
 
-  constructor(private router: Router, private http: HttpClient, private localStorageService: LocalStorageService) {}
+  constructor(private router: Router, private localStorageService: LocalStorageService) {}
 
   onLogin() {
     if (this.username && this.password) {

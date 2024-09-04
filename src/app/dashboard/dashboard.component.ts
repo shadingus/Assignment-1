@@ -9,13 +9,13 @@ interface Channel {
   id: number;
   name: string;
   messages: { username: string; message: string }[];
-}
+};
 
 interface Group {
   id: number;
   name: string;
   channels: Channel[];
-}
+};
 
 interface User {
   id?: number;
@@ -24,7 +24,7 @@ interface User {
   password: string;
   role: string;
   groups: string[];
-}
+};
 
 @Component({
   selector: 'app-dashboard',
@@ -62,8 +62,7 @@ export class DashboardComponent implements OnInit {
     // Check if users and groups already exist in local storage
     if (!this.localStorageService.getItem('users') || !this.localStorageService.getItem('groups')) {
       this.initializeDefaultData();
-    }
-
+    };
     // Load user from session storage
     const storedUser = sessionStorage.getItem('user');
     if (storedUser) {
@@ -71,10 +70,9 @@ export class DashboardComponent implements OnInit {
       this.user.groups = this.user.groups || [];
     } else {
       return;
-    }
-
+    };
     this.loadUsersAndGroups();
-  }
+  };
 
   initializeDefaultData() {
     const defaultUsers = [
@@ -103,12 +101,10 @@ export class DashboardComponent implements OnInit {
         ]
       }
     ];
-
     // Save the default users and groups into local storage
     this.localStorageService.setItem('users', defaultUsers);
     this.localStorageService.setItem('groups', defaultGroups);
-  }
-
+  };
 
   loadUsersAndGroups() {
     const groups = this.localStorageService.getItem('groups') || [];
