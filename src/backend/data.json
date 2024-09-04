@@ -61,6 +61,11 @@
           "id": 2,
           "name": "bananaChannel",
           "messages": []
+        },
+        {
+          "id": 3,
+          "name": "minecraft",
+          "messages": []
         }
       ]
     }

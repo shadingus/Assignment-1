@@ -3,8 +3,6 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
 const path = require('path');
-const fs = require('fs');
-require('dotenv').config();
 
 // Middleware
 app.use(cors());
@@ -14,36 +12,20 @@ app.use(bodyParser.json());
 const staticPath = path.join(__dirname, '../../dist/assignment-1/browser');
 app.use(express.static(staticPath));
 
-const DATA_FILE = path.join(__dirname, 'data.json');
-
-let groups = [];
-let users = [];
-
-if (fs.existsSync(DATA_FILE)) {
-    const data = fs.readFileSync(DATA_FILE);
-    try {
-        const parsedData = JSON.parse(data);
-        groups = parsedData.groups || [];
-        users = parsedData.users || [];
-    } catch (error) {
-        console.error('Error parsing JSON Data:', error)
-    };
-};
-
-function saveData() {
-    const data = { groups, users };
-    try {
-        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-        console.log('Data successfully written to file.');
-    } catch (error) {
-        console.error('Error writing data to file:', error);
-    }
-};
-
+const users = [
+  {
+    id: 1,
+    username: 'super',
+    email: 'super@admin.com',
+    password: '123',
+    role: 'Super Admin',
+    groups: ['Admin Chat']
+  },
+];
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(staticPath, 'index.html'));
-})
+});
 
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
@@ -66,22 +48,14 @@ app.post('/login', (req, res) => {
             username: user.username,
             role: user.role,
             groups: user.groups
-        },
+        }
     });
 });
 
-app.get('/users', (req, res) => {
-    res.json(users);
-});
+app.post('/register', (req, res) => {
+    const { username, email, password, role, groups } = req.body;
 
-app.post('/users', (req, res) => {
-    const { username, email, password, role, groups = [] } = req.body;
-
-    const existingUser = users.find(user => user.username === username);
-
-    if (existingUser) {
-        return res.status(400).json({ error: 'Username already exists.' });
-    };
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
 
     const newUser = {
         id: users.length + 1,
@@ -89,134 +63,14 @@ app.post('/users', (req, res) => {
         email,
         password,
         role,
-        groups
-    };
+        groups,
+    }
     users.push(newUser);
-    saveData();
-    res.json(newUser);
-});
-
-app.delete('/users/:id', (req, res) => {
-    const userID = parseInt(req.params.id, 10);
-
-    const userIndex = users.findIndex(user => user.id === userID);
-    if (userIndex === -1) {
-        return res.json(404).json({ error: 'User not found.' });
-    };
-
-    const removedUser = users.splice(userIndex, 1)[0];
-    saveData();
-    res.json(removedUser);
+    localStorage.setItem('users', JSON.stringify(users));
+    res.json({ message: 'User successfully registered', user: newUser });
 })
 
-app.get('/groups', (req, res) => {
-    res.json(groups);
-});
-
-app.post('/groups', (req, res) => {
-    const { name } = req.body;
-    const newGroup = {
-        id: groups.length + 1,
-        name,
-        channels: [],
-    };
-    groups.push(newGroup);
-    saveData();
-    res.json(newGroup);
-});
-
-app.post('/groups/:groupId/add-user', (req, res) => {
-    const { groupId } = req.params;
-    const { userId } = req.body;
-
-    const group = groups.find(group => group.id === parseInt(groupId, 10));
-    const user = users.find(user => user.id === parseInt(userId, 10));
-
-    if (!group) {
-        return res.status(404).json({ error: 'Group not found.' });
-    };
-
-    if (!user) {
-        return res.status(404).json({ error: 'User not found.' });
-    };
-
-    if (!user.groups.includes(group.name)) {
-        user.groups.push(group.name);
-        saveData();
-        return res.json({ message: 'User added to group.', user });
-    } else {
-        return res.status(400).json({ error: 'User is already in this group.' });
-    };
-});
-
-app.get('/groups/:groupId/messages', (req, res) => {
-    const { groupId } = req.params;
-
-    const group = groups.find(group => group.id === parseInt(groupId, 10));
-
-    if (!group) {
-        return res.status(404).json({ error: 'Group not found.' });
-    }
-
-    return res.json(group.messages);
-});
-
-app.post('/groups/:groupId/channels', (req, res) => {
-    const { groupId } = req.params;
-    const { name } = req.body;
-
-    const group = groups.find(group => group.id === parseInt(groupId, 10));
-
-    if (!group) {
-        console.error(`Group with ID ${groupId} not found.`);
-        return res.status(404).json({ error: 'Group not found.' });
-    }
-
-    const newChannel = {
-        id: group.channels.length + 1,
-        name,
-        messages: []
-    };
-
-    group.channels.push(newChannel);
-    console.log(`Channel created: ${JSON.stringify(newChannel)}`); // Log the new channel
-    saveData();
-    console.log('Data saved to file.'); // Log that the data is saved
-
-    return res.json({ message: 'Channel created successfully.', newChannel });
-});
-
-
-app.get('/groups/:groupId/channels', (req, res) => {
-    const { groupId } = req.params;
-
-    const group = groups.find(group => group.id === parseInt(groupId, 10));
-
-    if (!group) {
-        return res.status(404).json({ error: 'Group not found.' });
-    }
-
-    return res.json(group.channels);
-});
-
-app.get('/groups/:groupId/channels/:channelId/messages', (req, res) => {
-    const { groupId, channelId } = req.params;
-
-    const group = groups.find(group => group.id === parseInt(groupId, 10));
-    if (!group) {
-        return res.status(404).json({ error: 'Group not found.' });
-    }
-
-    const channel = group.channels.find(channel => channel.id === parseInt(channelId, 10));
-    if (!channel) {
-        return res.status(404).json({ error: 'Channel not found.' });
-    }
-
-    return res.json(channel.messages);
-});
-
 const port = process.env.PORT || 3000;
-
 app.listen(port, () => {
     console.log(`Server is running on port http://localhost:${port}`);
 });

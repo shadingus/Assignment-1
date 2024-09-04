@@ -85,6 +85,11 @@
     margin-right: 10px;
 }
 
+.no-group-view {
+    padding-left: 20px;
+    padding-top: 20px;
+}
+
 .send-button {
     padding: 10px 20px;
     border: none;

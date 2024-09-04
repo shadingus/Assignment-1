@@ -2,7 +2,7 @@
   <div class="dashboard-container">
     <div class="dashbox">
       <div class="chat-container">
-        <div *ngIf="!selectedGroup">
+        <div class="no-group-view" *ngIf="!selectedGroup">
           <h1>Welcome to the Dashboard, {{ user.username }}!</h1>
           <p>Email: {{ user.email }}</p>
           <p>ID: {{ user.id }}</p>
@@ -10,6 +10,22 @@
           <p>Groups: {{ user.groups && user.groups.length > 0 ? user.groups.join(', ') : 'No groups assigned' }}</p>
           <p>Select a group to view the chat.</p>
           <button class="btn btn-danger" (click)="logout()">Logout</button>
+          <!-- Super Admin functionality to manage users -->
+          <div *ngIf="user.role === 'Super Admin'">
+            <h3>User Management</h3>
+
+            <!-- User List -->
+            <h4>All Users</h4>
+            <ul>
+              <li *ngFor="let usr of allUsers">
+                {{ usr.username }} ({{ usr.role }})
+                <button (click)="deleteUser(usr.id)" class="btn btn-danger btn-sm">Delete</button>
+              </li>
+            </ul>
+
+            <!-- Button to open create user modal -->
+            <button class="btn btn-primary" (click)="showCreateUserModal()">Create New User</button>
+          </div>
         </div>
 
         <!-- Chat Section -->
@@ -77,6 +93,28 @@
         </div>
       </div>
 
+      <!-- Modal for Creating a New Group -->
+      <div class="modal fade" id="newGroupModal" tabindex="-1" aria-labelledby="newGroupModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="newGroupModalLabel">Create New Group</h5>
+              <button type="button" class="btn-close" aria-label="Close" (click)="cancel()"></button>
+            </div>
+            <div class="modal-body">
+              <form (submit)="createGroup()">
+                <div class="mb-3">
+                  <label for="groupName" class="form-label">Group Name</label>
+                  <input type="text" class="form-control" id="groupName" [(ngModel)]="newGroupName" name="groupName"
+                    required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Group</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Modal for Adding a User to a Group -->
       <div class="modal fade" id="addUserToGroupModal" tabindex="-1" aria-labelledby="addUserToGroupModalLabel"
         aria-hidden="true">
@@ -96,20 +134,13 @@
                     </option>
                   </select>
                 </div>
-                <div class="mb-3">
-                  <label for="selectGroup" class="form-label">Select Group:</label>
-                  <select id="selectGroup" [(ngModel)]="selectedGroup" class="form-select" name="selectGroup" disabled>
-                    <option [value]="selectedGroup?.name">
-                      {{ selectedGroup?.name }}
-                    </option>
-                  </select>
-                </div>
                 <button type="submit" class="btn btn-primary">Add User to Group</button>
               </form>
             </div>
           </div>
         </div>
       </div>
+
 
       <!-- Modal for Creating a New Channel -->
       <div class="modal fade" id="createChannelModal" tabindex="-1" aria-labelledby="createChannelModalLabel"

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { LocalStorageService } from '../services/local-storage.service';
 
 interface Channel {
   id: number;
@@ -14,6 +15,15 @@ interface Group {
   id: number;
   name: string;
   channels: Channel[];
+}
+
+interface User {
+  id?: number;
+  username: string;
+  email: string;
+  password: string;
+  role: string;
+  groups: string[];
 }
 
 @Component({
@@ -35,7 +45,8 @@ export class DashboardComponent implements OnInit {
   allUsers: any[] = [];
   selectedUserId: number | null = null;
 
-  newUser = {
+  newUser: User = {
+    id: 0,
     username: '',
     email: '',
     password: '',
@@ -45,32 +56,69 @@ export class DashboardComponent implements OnInit {
 
   private modalInstance: any;
 
-  constructor(private router: Router, private http: HttpClient) { }
+  constructor(private router: Router, private http: HttpClient, private localStorageService: LocalStorageService) { }
 
   ngOnInit() {
+    // Check if users and groups already exist in local storage
+    if (!this.localStorageService.getItem('users') || !this.localStorageService.getItem('groups')) {
+      this.initializeDefaultData();
+    }
+
+    // Load user from session storage
     const storedUser = sessionStorage.getItem('user');
     if (storedUser) {
       this.user = JSON.parse(storedUser);
       this.user.groups = this.user.groups || [];
     } else {
       return;
-    };
+    }
+
     this.loadUsersAndGroups();
-  };
+  }
+
+  initializeDefaultData() {
+    const defaultUsers = [
+      {
+        id: 1,
+        username: 'super',
+        email: 'super@admin.com',
+        password: '123',
+        role: 'Super Admin',
+        groups: ['Admin Chat']
+      }
+    ];
+
+    const defaultGroups = [
+      {
+        id: 1,
+        name: 'Admin Chat',
+        channels: [
+          {
+            id: 1,
+            name: 'General',
+            messages: [
+              { username: 'super', message: 'Welcome to Admin Chat!' }
+            ]
+          }
+        ]
+      }
+    ];
+
+    // Save the default users and groups into local storage
+    this.localStorageService.setItem('users', defaultUsers);
+    this.localStorageService.setItem('groups', defaultGroups);
+  }
+
 
   loadUsersAndGroups() {
-    this.http.get<Group[]>('/groups').subscribe((groups) => {
-      if (this.user.role === 'User') {
-        this.groups = groups.filter(group => this.user.groups.includes(group.name));
-      } else {
-        this.groups = groups;
-      };
-    });
-
+    const groups = this.localStorageService.getItem('groups') || [];
+    if (this.user.role === 'User') {
+      this.groups = groups.filter((group: { name: any }) => this.user.groups.includes(group.name));
+    } else {
+      this.groups = groups;
+    };
     if (this.user.role === 'Super Admin' || this.user.role === 'Group Admin') {
-      this.http.get<any[]>('/users').subscribe((users) => {
-        this.allUsers = users;
-      });
+      this.allUsers = this.localStorageService.getItem('users') || [];
     };
   };
 
@@ -97,40 +145,64 @@ export class DashboardComponent implements OnInit {
     };
   };
 
-  loadMessages(channel: any) {
+  loadMessages(channel: Channel) {
     this.messages = channel.messages.map((msg: any) => `${msg.username}: ${msg.message}`);
   };
 
   addUserToGroup() {
     if (this.selectedGroup && this.selectedUserId) {
       const selectedGroupId = this.selectedGroup.id;
-      this.http.post(`/groups/${selectedGroupId}/add-user`, { userId: this.selectedUserId }).subscribe({
-        next: (response: any) => {
-          alert(response.message);
-          this.selectedUserId = null;
-          if (this.modalInstance) {
-            this.modalInstance.hide();
+      // Retrieve groups from local storage
+      let groups = this.localStorageService.getItem('groups') || [];
+      if (typeof groups === 'string') {
+        groups = JSON.parse(groups);
+      }
+      // Find the selected group
+      const group = groups.find((g: any) => g.id === selectedGroupId);
+      if (group) {
+  
+        // Retrieve users from local storage
+        let users = this.localStorageService.getItem('users') || [];
+        if (typeof users === 'string') {
+          users = JSON.parse(users);
+        };
+        // Find the user by ID
+        const user = users.find((u: any) => u.id === Number(this.selectedUserId));
+        if (user) {
+          if (!user.groups.includes(group.name)) {
+            user.groups.push(group.name);
+            this.localStorageService.setItem('users', users);
+            alert(`User ${user.username} added to group ${group.name}`);
+            this.selectedUserId = null;
+            if (this.modalInstance) {
+              this.modalInstance.hide();
+            }
+          } else {
+            alert('User is already in this group.');
           };
-        },
-        error: (error) => {
-          alert(error.error.error);
-        }
-      });
+        } else {
+          alert('User not found.');
+        };
+      } else {
+        alert('Group not found.');
+      };
     } else {
       alert('Please select a group and a user.');
     };
   };
-
+  
   createGroup() {
     const trimmedGroupName = this.newGroupName.trim();
     if (trimmedGroupName) {
       const newGroup: Group = {
         id: this.groups.length + 1,
         name: trimmedGroupName,
-        channels: []  // Initialize an empty channels array
+        channels: [] // Initialize an empty channels array
       };
       this.groups.push(newGroup);
+      this.localStorageService.setItem('groups', this.groups); // Save to localStorage
       this.newGroupName = '';
+      this.modalInstance.hide();
     } else {
       alert('Please enter a group name.');
     };
@@ -141,33 +213,39 @@ export class DashboardComponent implements OnInit {
       alert('Please enter a channel name.');
       return;
     };
-
-    const groupId = this.selectedGroup.id;
-    const channelData = { name: this.newChannelName.trim() };
-
-    this.http.post(`/groups/${groupId}/channels`, channelData).subscribe({
-      next: (response: any) => {
-        this.selectedGroup?.channels.push(response.newChannel);
-        this.newChannelName = '';
-        this.modalInstance.hide();
-      },
-      error: (error) => {
-        alert('There was an error creating the channel. Please try again.');
-      }
-    });
+    const channelData = {
+      id: this.selectedGroup.channels.length + 1,
+      name: this.newChannelName.trim(),
+      messages: []
+    };
+    this.selectedGroup.channels.push(channelData);
+    const groups = this.localStorageService.getItem('groups') || [];
+    const groupIndex = groups.findIndex((g: any) => g.id === this.selectedGroup?.id);
+    if (groupIndex > -1) {
+      groups[groupIndex] = this.selectedGroup;
+      this.localStorageService.setItem('groups', groups);
+    };
+    this.newChannelName = '';
+    this.modalInstance.hide();
   };
 
   createUser() {
-    this.http.post<any>('/users', this.newUser).subscribe({
-      next: (newUser) => {
-        this.allUsers.push(newUser);
-        this.newUser = { username: '', email: '', password: '', role: 'User', groups: [] };
-        this.modalInstance.hide();
+    const users = this.localStorageService.getItem('users') || [];
+    const newUser = { ...this.newUser, id: users.length + 1 };
+    users.push(newUser);
+    this.localStorageService.setItem('users', users);
+    this.allUsers.push(newUser);
+
+    this.http.post('/register', newUser).subscribe({
+      next: response => {
+        console.log('User registered on backend:', response);
       },
-      error: (error) => {
-        alert(error.error.error);
+      error: error => {
+        console.error('Error registering user on backend:', error)
       }
-    });
+    })
+    this.newUser = { id: 0, username: '', email: '', password: '', role: 'User', groups: [] };
+    this.modalInstance.hide();
   };
 
   showModal() {
@@ -210,17 +288,16 @@ export class DashboardComponent implements OnInit {
   };
 
   logout() {
-    sessionStorage.removeItem('user');
+    this.localStorageService.removeItem('user');
     this.router.navigate(['/login']);
   };
 
   deleteUser(userId: number) {
     if (confirm('Are you sure you want to delete this user?')) {
-      this.http.delete(`/users/${userId}`).subscribe(() => {
-        this.allUsers = this.allUsers.filter(user => user.id !== userId);
-      }, error => {
-        alert(error.error.error);
-      });
+      let users = this.localStorageService.getItem('users') || [];
+      users = users.filter((user: any) => user.id !== userId);
+      this.localStorageService.setItem('users', users); // Save the updated users list
+      this.allUsers = users; // Update local list of users
     };
   };
 };

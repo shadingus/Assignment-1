@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { LocalStorageService } from '../services/local-storage.service';
+
 
 @Component({
   selector: 'app-login',
@@ -14,39 +16,20 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router, private http: HttpClient, private localStorageService: LocalStorageService) {}
 
   onLogin() {
     if (this.username && this.password) {
 
-      this.http.post('http://localhost:3000/login', {
-        username: this.username,
-        password: this.password
-      }).subscribe({
-        next: (response: any) => {
-          console.log('Login response:', response);
-          sessionStorage.setItem('user', JSON.stringify({
-            id: response.user.id,
-            email: response.user.email,
-            username: response.user.username,
-            role: response.user.role,
-            groups: response.user.groups,
-          }));
-          this.router.navigate(['/dashboard'], { queryParams: { username: this.username } });
-        },
-        error: error => {
-          if (error.status === 404) {
-            alert('User does not exist. Please contact the super admin to create your login credentials.');
-          } else if (error.status === 401) {
-            alert('Incorrect password. Please try again.');
-          } else {
-            alert('Login failed. Please try again later.');
-          };
-        },
-        complete: () => {
-          console.log('Login request completed.');
-        }
-      });
+      const users = this.localStorageService.getItem('users' || []);
+      const user = users.find((u: any) => u.username === this.username && u.password === this.password);
+
+      if (user) {
+        sessionStorage.setItem('user', JSON.stringify(user));
+        this.router.navigate(['/dashboard'], { queryParams: { username: this.username } });
+      } else {
+        alert('User does not exist or incorrect credentials.');
+      };
     } else {
       alert('Please enter both a username and a password.');
     };
