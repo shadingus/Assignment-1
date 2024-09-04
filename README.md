@@ -56,28 +56,17 @@ These updates were never specific to the frontend or backend. Whatever I felt li
 4. Routing:
     - After successfully logging in via the `LoginComponent`, the user is routed to the `DashboardComponent` using the `Router`.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.1.
+### Node Server Architecture
 
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+1. Modules:
+    - `Express`: Used to set up the server and define routes for handling HTTP requests.
+    - `CORS`: Middleware to enable Cross-Origin Resource Sharing, allowing requests from different domains.
+    - `Body-Parser`: Middleware to handle parsing of incoming request bodies (e.g., form data and JSON).
+    - `Path`: Provides utilities for working with file and directory paths, such as serving static files.
+2. Functions:
+    - `app.get('/')`: Handles the GET request to serve the main index.html file.
+    - `app.post('/register')`: Handles user registration by capturing form data (username, email, password, etc.), creating a new user, and adding it to the in-memory users array.
+3. Files:
+    - The `server.js` file serves static files from a specified path (staticPath), which points to the frontend (Angular build) directory.
+4. Global Variables:
+    - `users`: An in-memory array storing user objects (id, username, email, password, role, groups) that simulates user data storage.
