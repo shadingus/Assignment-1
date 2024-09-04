@@ -85,6 +85,14 @@
     margin-right: 10px;
 }
 
+.user-log {
+    padding-bottom: 10px;
+}
+
+.admin-management {
+    margin-right: 20px;
+}
+
 .no-group-view {
     padding-left: 20px;
     padding-top: 20px;

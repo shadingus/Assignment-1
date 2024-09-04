@@ -10,15 +10,27 @@
           <p>Groups: {{ user.groups && user.groups.length > 0 ? user.groups.join(', ') : 'No groups assigned' }}</p>
           <p>Select a group to view the chat.</p>
           <button class="btn btn-danger" (click)="logout()">Logout</button>
-          <div *ngIf="user.role === 'Super Admin'">
+          <div class="admin-management" *ngIf="user.role === 'Super Admin'">
             <h3>User Management</h3>
             <h4>All Users</h4>
-            <ul>
-              <li *ngFor="let usr of allUsers">
-                {{ usr.username }} ({{ usr.role }})
-                <button (click)="deleteUser(usr.id)" class="btn btn-danger btn-sm">Delete</button>
-              </li>
-            </ul>
+            <table class="table table-bordered table-hover table-striped">
+              <thead>
+                <th scope="col">Username</th>
+                <th scope="col">Role</th>
+                <th scope="col">Option 1</th>
+                <th scope="col">Option 2</th>
+                <th scope="col">Option 3</th>
+              </thead>
+              <tbody>
+                <tr *ngFor="let usr of allUsers">
+                  <td>{{ usr.username }}</td>
+                  <td>{{ usr.role }}</td>
+                  <td><button class="btn btn-primary btn-sm">Promote</button></td>
+                  <td><button class="btn btn-warning btn-sm">Edit</button></td>
+                  <td><button (click)="deleteUser(usr.id)" class="btn btn-danger btn-sm">Delete</button></td>
+                </tr>
+              </tbody>
+            </table>
             <button class="btn btn-primary" (click)="showCreateUserModal()">Create New User</button>
           </div>
         </div>
