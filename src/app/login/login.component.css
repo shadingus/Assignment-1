@@ -26,6 +26,15 @@
     align-items: center;
 }
 
+.register-button {
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .input-group-text {
     width: 100px;
     display: inline-block;
@@ -53,12 +62,23 @@ h3 {
     color: black;
 }
 
-#login {
+#login,
+#register {
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #8300ff;
     color: white;
+    transition: background-color 0.3s;
+}
+
+#login:hover,
+#register:hover {
+    background-color: #6b5179;
+}
+
+#register-text {
+    color: black;
 }
 
 p {
@@ -116,4 +136,11 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.welcome-message {
+    padding-top: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
 }

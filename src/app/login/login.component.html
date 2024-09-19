@@ -5,7 +5,8 @@
                 <h1>Yappers</h1>
             </div>
             <div>
-                <h4 style="padding-top: 30px; padding-left: 20px; padding-right: 20px; text-align: center;">Welcome to Yappers!<br>Yappers is a social application you
+                <h4 class="welcome-message">Welcome to
+                    Yappers!<br>Yappers is a social application you
                     can use to yap with your friends!</h4>
             </div>
         </div>
@@ -16,7 +17,7 @@
                     <div class="user-input">
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Username</span>
-                            <input type="username" class="form-control" [(ngModel)]="username" placeholder="Username"
+                            <input type="text" class="form-control" [(ngModel)]="username" placeholder="Username"
                                 aria-label="Username" aria-describedby="basic-addon1">
                         </div>
                         <div class="input-group mb-3">
@@ -27,9 +28,63 @@
                     </div>
                 </div>
                 <div class="login-button">
-                    <div>
-                        <button type="button" class="btn" id="login" (click)="onLogin()">Login</button>
+                    <div style="padding-right: 10px;">
+                        <button type="button" class="btn btn-primary" id="login" (click)="onLogin()">Login</button>
                     </div>
+                    <div>
+                        <button type="button" class="btn btn-secondary" id="register"
+                            (click)="openRegisterModal()">Register</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Create New User</h5>
+                    <button type="button" class="btn-close" aria-label="Close" (click)="cancel()"></button>
+                </div>
+                <div class="modal-body">
+                    <form (ngSubmit)="register()" #registerForm="ngForm">
+                        <!-- Username Field with Validation -->
+                        <div class="mb-3">
+                            <label for="username" class="form-label" id="register-text">Username</label>
+                            <input type="text" class="form-control" id="username" [(ngModel)]="newUser.username"
+                                name="username" placeholder="Enter username" required minlength="3"
+                                #usernameInput="ngModel">
+                            <div *ngIf="usernameInput.invalid && usernameInput.touched" class="text-danger">
+                                Username is required and must be at least 3 characters.
+                            </div>
+                        </div>
+
+                        <!-- Email Field with Validation -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label" id="register-text">Email</label>
+                            <input type="email" class="form-control" id="email" [(ngModel)]="newUser.email" name="email"
+                                placeholder="Enter email" required email #emailInput="ngModel">
+                            <div *ngIf="emailInput.invalid && emailInput.touched" class="text-danger">
+                                A valid email is required.
+                            </div>
+                        </div>
+
+                        <!-- Password Field with Validation -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label" id="register-text">Password</label>
+                            <input type="password" class="form-control" id="password" [(ngModel)]="newUser.password"
+                                name="password" placeholder="Enter password" required minlength="6"
+                                #passwordInput="ngModel">
+                            <div *ngIf="passwordInput.invalid && passwordInput.touched" class="text-danger">
+                                Password is required and must be at least 6 characters.
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">Create
+                            User</button>
+                    </form>
                 </div>
             </div>
         </div>

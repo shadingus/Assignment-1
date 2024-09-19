@@ -7,7 +7,8 @@
 }
 
 .top-section {
-    flex: 0 0 60px; /* Adjust height as needed */
+    flex: 0 0 60px;
+    /* Adjust height as needed */
     background-color: #2b2433;
     padding: 10px;
     border-bottom: 1px solid #4c3a5c;
@@ -19,14 +20,16 @@
     display: flex;
     flex: 1;
     width: 100%;
-    overflow: hidden; /* Hide any overflow */
+    overflow: hidden;
+    /* Hide any overflow */
 }
 
 .left-half {
     flex: 0.5;
     padding: 10px;
     overflow-y: auto;
-    background-color: #352d44; /* Match chat container background */
+    background-color: #352d44;
+    /* Match chat container background */
     border-right: 1px solid #4c3a5c;
 }
 
@@ -34,14 +37,16 @@
     flex: 5.5;
     padding: 10px;
     overflow-y: auto;
-    background-color: #352d44; /* Match chat container background */
+    background-color: #352d44;
+    /* Match chat container background */
 }
 
 .right-half {
     flex: 0.5;
     padding: 10px;
     overflow-y: auto;
-    background-color: #352d44; /* Match chat container background */
+    background-color: #352d44;
+    /* Match chat container background */
     border-left: 1px solid #4c3a5c;
 }
 
@@ -168,7 +173,6 @@
     width: 2px;
     height: 50px;
     background-color: white;
-    margin-right: 10px;
     flex-shrink: 0;
 }
 
@@ -180,4 +184,43 @@
     justify-content: flex-start;
     min-height: 100vh;
     padding-top: 30px;
+}
+
+.notification-banner {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+/* Styles for the container when no channel is selected */
+.no-channel-selected {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 18px;
+    color: #555;
+    background-color: #f5f5f5;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* Ensuring the chat messages area has some padding and styling */
+.chat-messages {
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Add some margin between messages */
+.chat-messages p {
+    margin-bottom: 10px;
+    color: black;
 }

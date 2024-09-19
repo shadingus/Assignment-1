@@ -7,10 +7,18 @@
           <p>Email: {{ user.email }}</p>
           <p>ID: {{ user.id }}</p>
           <p>Role: {{ user.role }}</p>
-          <p>Groups: {{ user.groups && user.groups.length > 0 ? user.groups.join(', ') : 'No groups assigned' }}</p>
+          <p>
+            Groups:
+            <span *ngIf="user.groups && user.groups.length > 0">
+              {{ userGroupNames.join(', ') }}
+            </span>
+            <span *ngIf="!userGroupNames || userGroupNames.length === 0">
+              No groups assigned.
+            </span>
+          </p>
           <p>Select a group to view the chat.</p>
           <div class="admin-management" *ngIf="user.role === 'Super Admin'">
-            <h3>User Management</h3>
+            <h3>Users in System:</h3>
             <h4>All Users</h4>
             <table class="table table-bordered table-hover table-striped">
               <thead>
@@ -28,19 +36,47 @@
                 </tr>
               </tbody>
             </table>
-            <button class="btn btn-primary" (click)="showCreateUserModal()">Create New User</button>
+            <h3>Ban Reports</h3>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Group</th>
+                  <th>Channel</th>
+                  <th>Banned By</th>
+                  <th>Date</th>
+                  <th>Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let report of banReports">
+                  <td>{{ getUsername(report.bannedUserId) }}</td>
+                  <td>{{ getGroupName(report.groupId) }}</td>
+                  <td>{{ getChannelName(report.groupId, report.channelId) }}</td>
+                  <td>{{ getUsername(report.bannedBy) }}</td>
+                  <td>{{ report.date | date: 'short' }}</td>
+                  <td>{{ report.reason }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           <div class="user-logout">
             <button class="btn btn-danger" (click)="logout()">Logout</button>
           </div>
         </div>
 
-        <div class="group-chat-container" *ngIf="selectedGroup">
+        <div class="group-chat-container" *ngIf="selectedGroup" style="border-radius: 30px;">
           <div class="top-section">
             <h2>Group Chat: {{ selectedGroup.name }}</h2>
-            <div *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'">
+            <div
+              *ngIf="selectedGroup && (user.role === 'Super Admin' || (user.role === 'Group Admin' && user.id === selectedGroup.creatorId))">
               <button class="btn btn-primary mt-3" (click)="showAddUserToGroupModal()">Add User to Group</button>
               <button class="btn btn-primary mt-3" (click)="showCreateChannelModal()">Create Channel</button>
+              <button class="btn btn-danger mt-3"
+                *ngIf="user.role === 'Super Admin' || (user.role === 'Group Admin' && user.id === selectedGroup.creatorId)"
+                (click)="deleteGroup()">
+                Delete Group
+              </button>
             </div>
           </div>
 
@@ -54,7 +90,14 @@
                   <tbody>
                     <tr *ngFor="let channel of selectedGroup.channels" (click)="selectChannel(channel)"
                       [class.selected]="channel === selectedChannel">
-                      <td>{{ channel.name }}</td>
+                      <td>
+                        {{ channel.name }}
+                        <button
+                          *ngIf="user.role === 'Super Admin' || (user.role === 'Group Admin' && user.id === selectedGroup.creatorId)"
+                          class="btn btn-danger btn-sm" (click)="deleteChannel(channel.id); $event.stopPropagation()">
+                          Delete
+                        </button>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -62,8 +105,13 @@
             </div>
 
             <div class="middle-half">
-              <div class="chat-messages">
-                <p *ngFor="let message of selectedChannel?.messages">{{ message.username }}: {{ message.message }}</p>
+              <div *ngIf="!selectedChannel" class="no-channel-selected">
+                <p>Please select a channel to join.</p>
+              </div>
+              <div *ngIf="selectedChannel" class="chat-messages">
+                <p *ngFor="let msg of selectedChannel?.messages">
+                  {{ msg.username }}: {{ msg.message }}
+                </p>
               </div>
             </div>
 
@@ -71,32 +119,38 @@
               <div class="user-list">
                 <table class="table table-bordered table-hover table-striped">
                   <thead>
-                    <th scope="col">Users</th>
+                    <th scope="col">Users in {{ selectedGroup.name }}:</th>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let user of allUsers">
-                      <td>
-                        <ng-container *ngIf="selectedGroup && user.groups.includes(selectedGroup.name)">
-                          {{ user.username }}
-                        </ng-container>
+                    <tr *ngFor="let userItem of allUsers">
+                      <td *ngIf="selectedGroup && selectedGroup.members.includes(userItem.id)">
+                        {{ userItem.username }}
+
+                        <!-- Only show 'Ban' button if the logged-in user is a Super Admin or Group Admin -->
+                        <button
+                          *ngIf="(user.role === 'Super Admin' || (user.role === 'Group Admin' && user.id === selectedGroup.creatorId)) && userItem.id !== user.id"
+                          class="btn btn-danger btn-sm"
+                          (click)="banUser(userItem.id, selectedGroup.id, selectedChannel?.id)">
+                          Ban
+                        </button>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div class="text-box" *ngIf="selectedChannel">
-          <input type="text" class="chat-input" placeholder="Message..." />
-          <button class="send-button">Send</button>
+          </div>
+          <form (submit)="sendMessageToChannel()" class="text-box" *ngIf="selectedChannel">
+            <input type="text" class="chat-input" placeholder="Message..." [(ngModel)]="chatInput" required />
+            <button type="submit" class="send-button">Send</button>
+          </form>
         </div>
       </div>
 
       <div class="group-container">
         <div class="group-list">
-          <button class="dashboard-button" (click)="selectGroup(null)">D</button>
+          <button class="dashboard-button" style="margin-right: 10px;" (click)="selectGroup(null)">D</button>
           <div class="divider"></div>
           <button *ngFor="let group of groups" class="group-button" (click)="selectGroup(group.name)">
             {{ group.name.charAt(0) }}
@@ -104,7 +158,7 @@
           <div class="spacer"></div>
 
           <button *ngIf="user.role === 'Super Admin' || user.role === 'Group Admin'" type="button"
-            class="new-group-button" (click)="showModal()">+</button>
+            class="new-group-button" (click)="showModal('newGroupModal')">+</button>
         </div>
       </div>
 
@@ -114,7 +168,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="newGroupModalLabel">Create New Group</h5>
-              <button type="button" class="btn-close" aria-label="Close" (click)="cancel()"></button>
+              <button type="button" class="btn-close" aria-label="Close" (click)="hideModal()"></button>
             </div>
             <div class="modal-body">
               <form (submit)="createGroup()">
@@ -136,7 +190,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="addUserToGroupModalLabel">Add User to {{ selectedGroup?.name }}</h5>
-              <button type="button" class="btn-close" aria-label="Close" (click)="cancel()"></button>
+              <button type="button" class="btn-close" aria-label="Close" (click)="hideModal()"></button>
             </div>
             <div class="modal-body">
               <form (submit)="addUserToGroup()">
@@ -161,7 +215,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="createChannelModalLabel">Create Channel in {{ selectedGroup?.name }}</h5>
-              <button type="button" class="btn-close" aria-label="Close" (click)="cancel()"></button>
+              <button type="button" class="btn-close" aria-label="Close" (click)="hideModal()"></button>
             </div>
             <div class="modal-body">
               <form (submit)="createChannel()">
@@ -177,45 +231,6 @@
         </div>
       </div>
 
-      <div *ngIf="user.role === 'Super Admin'" class="modal fade" id="createUserModal" tabindex="-1"
-        aria-labelledby="createUserModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="createUserModalLabel">Create New User</h5>
-              <button type="button" class="btn-close" aria-label="Close" (click)="cancel()"></button>
-            </div>
-            <div class="modal-body">
-              <form (submit)="createUser()">
-                <div class="mb-3">
-                  <label for="username" class="form-label">Username</label>
-                  <input type="text" class="form-control" id="username" [(ngModel)]="newUser.username" name="username"
-                    required>
-                </div>
-                <div class="mb-3">
-                  <label for="email" class="form-label">Email</label>
-                  <input type="email" class="form-control" id="email" [(ngModel)]="newUser.email" name="email" required>
-                </div>
-                <div class="mb-3">
-                  <label for="password" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="password" [(ngModel)]="newUser.password"
-                    name="password" required>
-                </div>
-                <div class="mb-3">
-                  <label for="role" class="form-label">Role</label>
-                  <select class="form-select" [(ngModel)]="newUser.role" name="role" required>
-                    <option value="User">User</option>
-                    <option value="Group Admin">Group Admin</option>
-                    <option value="Super Admin">Super Admin</option>
-                  </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Create User</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- Promote User Modal -->
       <div *ngIf="user.role === 'Super Admin'" class="modal fade" id="promoteUserModal" tabindex="-1"
         aria-labelledby="promoteUserModalLabel" aria-hidden="true">
@@ -223,7 +238,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="promoteUserModalLabel">Promote User</h5>
-              <button type="button" class="btn-close" (click)="cancel()" aria-label="Close"></button>
+              <button type="button" class="btn-close" (click)="hideModal()" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <p *ngIf="selectedUser">Select the new role for {{ selectedUser.username }}:</p>
