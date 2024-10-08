@@ -94,7 +94,7 @@
                         {{ channel.name }}
                         <button
                           *ngIf="user.role === 'Super Admin' || (user.role === 'Group Admin' && user.id === selectedGroup.creatorId)"
-                          class="btn btn-danger btn-sm" (click)="deleteChannel(channel.id); $event.stopPropagation()">
+                          class="btn btn-danger btn-sm" (click)="deleteChannel(channel); $event.stopPropagation()">
                           Delete
                         </button>
                       </td>
@@ -129,8 +129,7 @@
                         <!-- Only show 'Ban' button if the logged-in user is a Super Admin or Group Admin -->
                         <button
                           *ngIf="(user.role === 'Super Admin' || (user.role === 'Group Admin' && user.id === selectedGroup.creatorId)) && userItem.id !== user.id"
-                          class="btn btn-danger btn-sm"
-                          (click)="banUser(userItem.id, selectedGroup.id, selectedChannel?.id)">
+                          class="btn btn-danger btn-sm">
                           Ban
                         </button>
                       </td>
@@ -152,7 +151,7 @@
         <div class="group-list">
           <button class="dashboard-button" style="margin-right: 10px;" (click)="selectGroup(null)">D</button>
           <div class="divider"></div>
-          <button *ngFor="let group of groups" class="group-button" (click)="selectGroup(group.name)">
+          <button *ngFor="let group of groups" class="group-button" (click)="selectGroup(group.id)">
             {{ group.name.charAt(0) }}
           </button>
           <div class="spacer"></div>
