@@ -58,7 +58,7 @@ router.post('/login', async (req, res) => {
     };
 });
 
-router.delete('/api/users/:userId', async (req, res) => {
+router.delete('/:userId', async (req, res) => {
     const userId = parseInt(req.params.userId, 10);
     if (isNaN(userId)) {
         return res.status(400).json({ message: 'Invalid userId.' });

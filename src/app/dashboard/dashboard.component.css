@@ -184,6 +184,7 @@
     justify-content: flex-start;
     min-height: 100vh;
     padding-top: 30px;
+    font-family: 'Pridi', serif !important;
 }
 
 .notification-banner {

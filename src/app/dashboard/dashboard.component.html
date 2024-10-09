@@ -110,7 +110,7 @@
               </div>
               <div *ngIf="selectedChannel" class="chat-messages">
                 <p *ngFor="let msg of selectedChannel?.messages">
-                  {{ msg.username }}: {{ msg.message }}
+                  <strong>{{ msg.username }}:</strong> {{ msg.message }}
                 </p>
               </div>
             </div>

@@ -7,7 +7,7 @@ import { LocalStorageService } from '../services/local-storage.service';
 import { DashboardService } from '../services/dashboard.service';
 import { LoginService } from '../services/login.service';
 import { ChangeDetectorRef } from '@angular/core';
-import { Subscription, interval } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import {
   Message,
@@ -79,27 +79,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.socket.on('userJoined', (data: any) => {
             console.log(`User ${data.userId} joined channel ${data.channelId}`);
           });
-          this.startPolling();
         } else {
           console.error('Socket initialization failed');
         }
       } else {
         console.error('User data missing');
       }
-    }
-  }
-
-  private startPolling(): void {
-    this.pollingInterval = setInterval(() => {
-      console.log('Polling for new changes...');
-      this.changeDetector.detectChanges();
-    }, 5000);
-  };
-
-  private stopPolling(): void {
-    if (this.pollingInterval) {
-      clearInterval(this.pollingInterval);
-      this.pollingInterval = null;
     }
   }
 
@@ -485,6 +470,5 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.chatMessageSubscription) {
       this.chatMessageSubscription.unsubscribe();
     }
-    this.stopPolling();
   }
 }
