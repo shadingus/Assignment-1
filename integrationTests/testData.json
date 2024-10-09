@@ -1,0 +1,19 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "groups": [
+        1
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "name": "Test Group",
+      "members": [
+        1
+      ]
+    }
+  ]
+}

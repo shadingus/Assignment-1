@@ -4,14 +4,29 @@
       "id": "admin-chat",
       "name": "Admin Chat",
       "channels": [],
-      "members": [1, 2],
+      "members": [
+        1,
+        2
+      ],
       "creatorId": 1
     },
     {
       "id": "testing-channel",
       "name": "testing channel",
       "channels": [],
-      "members": [1, 2],
+      "members": [
+        1,
+        2
+      ],
+      "creatorId": 1
+    },
+    {
+      "id": 1,
+      "name": "Test Group",
+      "channels": [],
+      "members": [
+        1
+      ],
       "creatorId": 1
     }
   ],
@@ -22,7 +37,12 @@
       "username": "super",
       "password": "123",
       "role": "Super Admin",
-      "groups": ["admin-chat", "testing-channel", "createme"]
+      "groups": [
+        "admin-chat",
+        "testing-channel",
+        "createme",
+        1
+      ]
     },
     {
       "id": 2,
@@ -30,7 +50,10 @@
       "email": "shadingus@email.com",
       "password": "password1",
       "role": "Group Admin",
-      "groups": ["admin-chat", "testing-channel"]
+      "groups": [
+        "admin-chat",
+        "testing-channel"
+      ]
     },
     {
       "id": 4,
