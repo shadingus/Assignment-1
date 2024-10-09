@@ -1,48 +1,38 @@
-// Import necessary modules
-const http = require("http"); // To make HTTP requests
-const chai = require("chai"); // Chai assertion library for testing
-const expect = chai.expect; // Expect syntax from Chai for assertions
-const express = require("express"); // Express framework to set up the server
-const path = require("path"); // Path module for working with file and directory paths
-const { readDataFile, writeDataFile } = require("./testFileUtils"); // Custom utility functions to read/write test data
-const testGroupRoutes = require("./testGroups"); // Import test-specific group routes
+const http = require("http");
+const chai = require("chai");
+const expect = chai.expect;
+const express = require("express");
+const path = require("path");
+const { readDataFile, writeDataFile } = require("./testFileUtils");
+const testGroupRoutes = require("./testGroups");
 
 describe("Group Routes Integration Tests", () => {
-  let server; // Variable to store the Express server instance
-  let app; // Variable to store the Express app instance
-  const testDataPath = path.join(__dirname, "./testData.json"); // Path to the test data file
-  const sampleData = { users: [{ id: 1, groups: [] }], groups: [] }; // Initial sample data for the tests
+  let server;
+  let app;
+  const testDataPath = path.join(__dirname, "./testData.json");
+  const sampleData = { users: [{ id: 1, groups: [] }], groups: [] };
 
   // Set up Express app and test data before running the tests
   before((done) => {
     // Write the initial test data using the utility function
     writeDataFile(testDataPath, sampleData)
       .then(() => {
-        // Initialize the Express app
         app = express();
-        app.use(express.json()); // Middleware to parse incoming JSON requests
-
-        // Middleware to inject the test data file path into the request object
+        app.use(express.json());
         app.use((req, res, next) => {
-          req.dataFilePath = testDataPath; // Use test data file path
+          req.dataFilePath = testDataPath;
           next();
         });
-
-        // Use the test-specific group routes for this test
         app.use("/groups", testGroupRoutes);
-
-        // Start the server on port 3000
         server = app.listen(3000, () => {
           console.log("Integration test server running on port 3000");
-          done(); // Signal that the server is ready
+          done();
         });
       })
-      .catch(done); // Handle any errors during setup
+      .catch(done);
   });
-
-  // Close the server after all tests are complete
   after((done) => {
-    server.close(done); // Close the server and signal the end of tests
+    server.close(done);
   });
 
   // Test for the POST /groups/create route
